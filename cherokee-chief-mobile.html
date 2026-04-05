@@ -1,0 +1,2297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Cherokee Chief Restoration</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Sora:wght@400;600;700;800&display=swap');
+
+:root {
+  --dark:    #141420;
+  --dark2:   #1e1e30;
+  --accent:  #c8a84b;
+  --teal:    #2da89a;
+  --light:   #f5f4ef;
+  --mid:     #e8e6de;
+  --red:     #c0392b;
+  --green:   #27ae60;
+  --gray:    #888;
+  --border:  #d8d6ce;
+  --white:   #ffffff;
+  --radius:  12px;
+  --radius-sm: 8px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: 'Sora', sans-serif;
+  background: var(--light);
+  color: var(--dark);
+  min-height: 100vh;
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+}
+
+/* ── HEADER ─────────────────────────────────────────────────── */
+.app-header {
+  background: var(--dark);
+  padding: 16px 18px 14px;
+  padding-top: calc(16px + env(safe-area-inset-top, 0px));
+  border-bottom: 2px solid var(--accent);
+  position: sticky; top: 0; z-index: 200;
+}
+.header-eyebrow { color: var(--accent); font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 3px; font-family: 'DM Mono', monospace; }
+.header-title { color: var(--white); font-size: 17px; font-weight: 800; line-height: 1.2; }
+.header-sub { color: #888; font-size: 10px; margin-top: 3px; font-family: 'DM Mono', monospace; }
+
+/* ── PROGRESS BAR ───────────────────────────────────────────── */
+.global-progress {
+  background: rgba(255,255,255,0.08);
+  height: 3px;
+  margin-top: 10px;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.global-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--teal), var(--accent));
+  border-radius: 2px;
+  width: 0%;
+  transition: width 0.4s ease;
+}
+.progress-label { color: #666; font-size: 10px; margin-top: 4px; font-family: 'DM Mono', monospace; }
+
+/* ── DASHBOARD ──────────────────────────────────────────────── */
+.dashboard {
+  margin: 16px 14px 8px;
+  background: var(--dark);
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid rgba(200,168,75,0.25);
+}
+.dash-title {
+  background: linear-gradient(135deg, var(--dark2) 0%, #252538 100%);
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid rgba(200,168,75,0.2);
+  font-size: 11px; font-weight: 700; color: var(--accent);
+  letter-spacing: 1px; text-transform: uppercase;
+  font-family: 'DM Mono', monospace;
+}
+.inv-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1px; background: rgba(255,255,255,0.06);
+}
+.inv-cell {
+  background: var(--dark2);
+  padding: 12px 14px;
+}
+.inv-cell.full { grid-column: 1/-1; }
+.inv-cell-label { color: #666; font-size: 9px; text-transform: uppercase; letter-spacing: 1px; font-family: 'DM Mono', monospace; margin-bottom: 3px; }
+.inv-cell-val { color: var(--accent); font-size: 20px; font-weight: 800; }
+.inv-cell-val.profit { color: #3dba6f; }
+.inv-cell-val.small { font-size: 15px; }
+
+/* ── SECTION LABEL ──────────────────────────────────────────── */
+.section-label {
+  padding: 18px 16px 8px;
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--gray); font-family: 'DM Mono', monospace;
+}
+
+/* ── PHASE CARDS ────────────────────────────────────────────── */
+.phase-card {
+  margin: 0 14px 10px;
+  background: var(--white);
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.phase-card-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+  -webkit-user-select: none; user-select: none;
+  background: var(--white);
+  transition: background 0.15s;
+  min-height: 64px;
+}
+.phase-card-header:active { background: var(--light); }
+.phase-card-header.open { border-bottom: 2px solid var(--accent); }
+
+.phase-index {
+  width: 32px; height: 32px; min-width: 32px;
+  background: var(--dark);
+  color: var(--accent);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800;
+  font-family: 'DM Mono', monospace;
+}
+.phase-card-info { flex: 1; min-width: 0; }
+.phase-card-title { font-size: 13px; font-weight: 700; color: var(--dark); line-height: 1.3; }
+.phase-card-meta { font-size: 11px; color: var(--gray); margin-top: 3px; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.diff-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+.phase-arrow { color: var(--gray); font-size: 20px; font-weight: 300; transition: transform 0.25s; }
+.phase-card-header.open .phase-arrow { transform: rotate(90deg); color: var(--accent); }
+
+.phase-body { padding: 0 14px 16px; background: var(--light); }
+.phase-desc-text { font-size: 12px; line-height: 1.7; color: #444; padding: 14px 0 6px; }
+
+/* ── CARD SECTIONS ──────────────────────────────────────────── */
+.card-section { margin-top: 12px; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--border); }
+.card-sec-title {
+  padding: 9px 14px;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.8px; text-transform: uppercase;
+  font-family: 'DM Mono', monospace;
+  color: var(--white);
+}
+.teal-bar { background: var(--teal); }
+.dark-bar { background: var(--dark); }
+
+/* ── COPY FIELDS ────────────────────────────────────────────── */
+.copy-field {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 14px;
+}
+.copy-field:last-child { border-bottom: none; }
+.copy-label { font-size: 9px; font-weight: 700; color: var(--teal); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; font-family: 'DM Mono', monospace; }
+.char-note { color: #aaa; font-weight: 400; }
+.copy-value {
+  font-size: 13px; color: var(--dark); line-height: 1.5;
+  background: var(--light); border-radius: 6px;
+  padding: 9px 12px;
+  border: 1.5px dashed var(--border);
+  cursor: pointer;
+  position: relative;
+  -webkit-user-select: all; user-select: all;
+  transition: border-color 0.2s, background 0.2s;
+}
+.copy-value::after {
+  content: "TAP TO COPY";
+  position: absolute; bottom: 7px; right: 10px;
+  font-size: 8px; font-weight: 700; color: var(--teal);
+  opacity: 0.7; font-family: 'DM Mono', monospace;
+}
+.copy-value.copied {
+  border-color: var(--green);
+  background: #f0fff6;
+}
+.copy-value.copied::after { content: "✓ COPIED"; color: var(--green); opacity: 1; }
+.copy-value.scrollable { max-height: 72px; overflow-y: auto; padding-bottom: 22px; }
+
+/* ── PARTS LIST ─────────────────────────────────────────────── */
+.parts-list { background: var(--white); }
+.part-row { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+.part-row:last-child { border-bottom: none; }
+.part-name { font-size: 12px; font-weight: 600; color: var(--dark); line-height: 1.4; margin-bottom: 4px; }
+.part-name a { color: var(--teal); text-decoration: none; }
+.part-meta { display: flex; justify-content: space-between; margin-bottom: 6px; }
+.part-source { font-size: 11px; color: var(--gray); }
+.part-price { font-size: 12px; font-weight: 700; color: var(--dark); font-family: 'DM Mono', monospace; }
+.part-checks { display: flex; gap: 12px; flex-wrap: wrap; }
+.chk-label { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--gray); cursor: pointer; }
+.chk-label input { width: 16px; height: 16px; cursor: pointer; accent-color: var(--teal); }
+
+/* ── STEPS ──────────────────────────────────────────────────── */
+.steps-list { background: var(--white); }
+.step-wrap { border-bottom: 1px solid var(--border); }
+.step-wrap:last-child { border-bottom: none; }
+
+.step-toggle {
+  width: 100%; display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px;
+  background: none; border: none; cursor: pointer;
+  text-align: left; min-height: 52px;
+  -webkit-tap-highlight-color: transparent;
+}
+.step-toggle:active { background: var(--light); }
+.step-toggle[aria-expanded="true"] .chevron { transform: rotate(90deg); color: var(--accent); }
+
+.step-pill {
+  background: var(--dark); color: var(--accent);
+  font-size: 9px; font-weight: 700;
+  padding: 3px 7px; border-radius: 5px;
+  white-space: nowrap; font-family: 'DM Mono', monospace;
+  min-width: 52px; text-align: center;
+}
+.step-name { flex: 1; font-size: 13px; font-weight: 600; color: var(--dark); line-height: 1.3; }
+.chevron { color: var(--border); font-size: 20px; font-weight: 300; transition: transform 0.2s; flex-shrink: 0; }
+
+.step-content { padding: 4px 14px 14px; background: var(--light); }
+.step-desc { font-size: 12px; line-height: 1.75; color: #333; padding: 8px 0 4px; }
+
+.step-section { margin-top: 10px; }
+.step-sec-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--gray); margin-bottom: 6px; font-family: 'DM Mono', monospace; }
+.tools-label { color: var(--gray); }
+.step-tools { padding-left: 16px; }
+.step-tools li { font-size: 12px; color: #444; margin-bottom: 3px; }
+
+.safety-block { background: #fff2f2; border-left: 3px solid var(--red); padding: 8px 10px; border-radius: 0 6px 6px 0; }
+.safety-line { font-size: 12px; color: var(--red); margin-bottom: 3px; line-height: 1.5; }
+.tip-block { background: #f2fff6; border-left: 3px solid var(--green); padding: 8px 10px; border-radius: 0 6px 6px 0; margin-top: 8px; }
+.tip-line { font-size: 12px; color: var(--green); margin-bottom: 3px; line-height: 1.5; }
+
+.checklist { display: flex; flex-direction: column; gap: 8px; }
+.step-check { display: flex; align-items: flex-start; gap: 9px; cursor: pointer; }
+.step-check input { width: 18px; height: 18px; min-width: 18px; margin-top: 1px; accent-color: var(--teal); cursor: pointer; }
+.step-check span { font-size: 13px; color: #333; line-height: 1.5; }
+.step-check input:checked + span { text-decoration: line-through; color: #aaa; }
+
+/* ── TOOLS MASTER ───────────────────────────────────────────── */
+.tools-master { background: var(--white); padding: 12px 14px 12px 28px; }
+.tools-master li { font-size: 12px; color: #444; margin-bottom: 5px; }
+
+/* ── TOAST ──────────────────────────────────────────────────── */
+.toast {
+  position: fixed; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--teal); color: white;
+  padding: 11px 22px; border-radius: 24px;
+  font-size: 13px; font-weight: 700;
+  pointer-events: none; z-index: 999;
+  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
+  opacity: 0; white-space: nowrap;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  font-family: 'DM Mono', monospace;
+}
+.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+/* ── BOTTOM PADDING ─────────────────────────────────────────── */
+.bottom-pad { height: 40px; }
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="header-eyebrow">Frame-Off Restoration</div>
+  <div class="header-title">1982 Cherokee Chief</div>
+  <div class="header-sub">AMC 360 · Sniper EFI · A727 · NP219 · Dana 44</div>
+  <div class="global-progress"><div class="global-progress-fill" id="gp"></div></div>
+  <div class="progress-label" id="progress-label">0 / 226 checklist items complete</div>
+</header>
+
+<div class="dashboard">
+  <div class="dash-title">Project Financials</div>
+  <div class="inv-grid">
+    <div class="inv-cell">
+      <div class="inv-cell-label">Purchase</div>
+      <div class="inv-cell-val small">$7,000</div>
+    </div>
+    <div class="inv-cell">
+      <div class="inv-cell-label">Parts Budget</div>
+      <div class="inv-cell-val small">$15,000</div>
+    </div>
+    <div class="inv-cell">
+      <div class="inv-cell-label">Total Investment</div>
+      <div class="inv-cell-val small">$22,000</div>
+    </div>
+    <div class="inv-cell">
+      <div class="inv-cell-label">Target Exit</div>
+      <div class="inv-cell-val small">$40,000</div>
+    </div>
+    <div class="inv-cell full">
+      <div class="inv-cell-label">Projected Profit (after $3k Dad fee)</div>
+      <div class="inv-cell-val profit">$14,000</div>
+    </div>
+  </div>
+</div>
+
+<div class="section-label">9 Phases — Essential First → Cosmetics Last</div>
+
+
+  <section class="phase-card" id="GUIDE-CC82-P2">
+    <div class="phase-card-header" onclick="togglePhase(this)">
+      <div class="phase-index">#1</div>
+      <div class="phase-card-info">
+        <div class="phase-card-title">Fuel System — Sniper EFI Support</div>
+        <div class="phase-card-meta">
+          <span class="diff-dot" style="background:#d4860a"></span>Intermediate
+          &nbsp;·&nbsp; ⏱ 8h
+          &nbsp;·&nbsp; 💰 $241
+        </div>
+      </div>
+      <div class="phase-arrow">›</div>
+    </div>
+
+    <div class="phase-body" hidden>
+
+      <p class="phase-desc-text">Complete fuel system replacement to properly support the already-installed Holley Sniper EFI system on the AMC 360. The Sniper requires a minimum 58 PSI high-pressure supply, a 3/8&quot; supply line, a return line back to the tank, and EFI-rated hose throughout. The factory low-pressure carbureted fuel system must be fully replaced. New polyethylene tank with early-style sending unit, new tank straps, filler/vent hoses, and all EFI-rated fuel line from tank to Sniper throttle body.</p>
+
+      <!-- TRACKARA ENTRY -->
+      <div class="card-section">
+        <div class="card-sec-title teal-bar">TRACKARA ENTRY</div>
+        <div class="copy-field">
+          <div class="copy-label">GUIDE TITLE</div>
+          <div class="copy-value" onclick="copyMe(this)">Fuel System — Sniper EFI Support</div>
+        </div>
+        <div class="copy-field">
+          <div class="copy-label">DESCRIPTION <span class="char-note">(481/500)</span></div>
+          <div class="copy-value scrollable" onclick="copyMe(this)">Complete fuel system replacement to properly support the already-installed Holley Sniper EFI system on the AMC 360. The Sniper requires a minimum 58 PSI high-pressure supply, a 3/8&quot; supply line, a return line back to the tank, and EFI-rated hose throughout. The factory low-pressure carbureted fuel system must be fully replaced. New polyethylene tank with early-style sending unit, new tank straps, filler/vent hoses, and all EFI-rated fuel line from tank to Sniper throttle body.</div>
+        </div>
+        <div class="copy-field">
+          <div class="copy-label">TAGS</div>
+          <div class="copy-value" onclick="copyMe(this)">fuel-system, sniper-efi, efi, holley, return-line, jeep, cherokee-chief, 1982</div>
+        </div>
+        <div class="copy-field">
+          <div class="copy-label">CATEGORY / DIFFICULTY</div>
+          <div class="copy-value">Fuel System / Intermediate</div>
+        </div>
+      </div>
+
+      <!-- PARTS -->
+      <div class="card-section">
+        <div class="card-sec-title dark-bar">PARTS — $241.04 est.</div>
+        <div class="parts-list">
+        <div class="part-row">
+          <div class="part-name"><a href="https://teamgrandwagoneer.com/fuel-tank-filler-vent-hose-set-1980-1991/" target="_blank">Fuel Tank Filler &amp; Vent Hose Set 1980-1991</a></div>
+          <div class="part-meta">
+            <span class="part-source">Team Grand Wagoneer</span>
+            <span class="part-price">$41.95</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://teamgrandwagoneer.com/fuel-tank-vent-valve-grommet-kit-gw-1980-1991/" target="_blank">Fuel Tank Vent Valve &amp; Grommet Kit 1980-1991</a></div>
+          <div class="part-meta">
+            <span class="part-source">Team Grand Wagoneer</span>
+            <span class="part-price">$13.95</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://bjsoffroad.com/fuel-tank-straps-1980-1991-wagons/" target="_blank">Fuel Tank Straps 1980-1991</a></div>
+          <div class="part-meta">
+            <span class="part-source">BJ's Off-Road</span>
+            <span class="part-price">$45.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://jeeprecyclers.com/jeep-1979-1991-cherokee-sj-wagoneer-grand-wagoneer-fuel-filler-neck-bezel/" target="_blank">Fuel Filler Neck Bezel 1979-1991</a></div>
+          <div class="part-meta">
+            <span class="part-source">JeepRecyclers</span>
+            <span class="part-price">$35.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://www.steelerubber.com/fuel-neck-grommet-70-2284-41" target="_blank">Fuel Neck Grommet 70-2284-41</a></div>
+          <div class="part-meta">
+            <span class="part-source">Steele Rubber</span>
+            <span class="part-price">$44.19</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://bjsoffroad.com/fuel-cap-1978-1991/" target="_blank">Fuel Cap 1978-1991</a></div>
+          <div class="part-meta">
+            <span class="part-source">BJ's Off-Road</span>
+            <span class="part-price">$12.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://teamgrandwagoneer.com/fuel-sending-unit-kit-early-style-1980-1985/" target="_blank">Fuel Sending Unit Kit Early Style 1980-1985</a></div>
+          <div class="part-meta">
+            <span class="part-source">Team Grand Wagoneer</span>
+            <span class="part-price">$48.95</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div></div>
+      </div>
+
+      <!-- STEPS -->
+      <div class="card-section">
+        <div class="card-sec-title dark-bar">PROCEDURE — 3 STEPS</div>
+        <div class="steps-list">
+      <div class="step-wrap" id="GUIDE-CC82-P2-s1">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 1</span>
+          <span class="step-name">Sniper EFI Fuel System Assessment</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">Before dropping the tank, assess the current Sniper fuel system setup. The Sniper requires: (1) high-pressure EFI pump capable of 58-65 PSI at minimum 50 GPH, (2) 3/8&quot; minimum supply line from pump to Sniper, (3) return line from Sniper back to tank, (4) all hose must be EFI-rated high-pressure — factory carb rubber hose will fail at EFI pressures. Trace the existing fuel lines. If an in-tank pump module (Holley 12-319 or Sniper 19-360) is already installed, a separate return line may not be needed — the regulator is inside the tank. If an inline pump is used, a return line to the tank is mandatory. Document what is currently installed before removing anything.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>Multimeter</li><li>Flashlight</li></ul></div>
+          <div class="step-section safety-block"><div class="safety-line">⚠ Disconnect battery negative before any fuel system inspection.</div><div class="safety-line">⚠ Identify the pump type before assuming the system is complete — an under-pressured Sniper causes lean conditions that damage the engine.</div></div>
+          <div class="step-section tip-block"><div class="tip-line">✓ Check fuel pressure at the Sniper inlet with a gauge before and after the new tank is installed. Target is 58-65 PSI at idle and under load.</div><div class="tip-line">✓ The FSJ Network has a detailed Sniper AMC 360 install writeup that covers the exact line modifications needed for the SJ Cherokee tank sending unit.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Pump type identified (in-tank module vs inline)</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Existing line sizes documented (3/8&quot; supply required)</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Return line presence confirmed or planned</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All hose material verified as EFI-rated</span></label></div></div>
+        </div>
+      </div>
+      <div class="step-wrap" id="GUIDE-CC82-P2-s2">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 2</span>
+          <span class="step-name">Tank Removal &amp; Sending Unit Installation</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">Raise and support vehicle. Run fuel level as low as possible before removal. Support tank on jack before loosening straps. Disconnect supply line, return line (if present), vent lines, and sending unit connector. Remove tank straps and lower tank. Install early-style 1980-1985 sending unit into tank with new lock ring seal. Torque lock ring to finger-tight plus 1/4 turn only — do not use a torque wrench on the polyethylene tank lock ring. Verify float arm travels full range without contacting tank walls. If adding a return line bulkhead to the tank for Sniper return fuel, install the Holley bulkhead fitting through the sending unit plate per Holley instructions — route return tube to bottom of tank, 1/2&quot; from pickup, away from the fuel pickup inlet.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>Transmission jack</li><li>Spanner wrench</li><li>Fuel line disconnect tools</li></ul></div>
+          <div class="step-section safety-block"><div class="safety-line">⚠ Fuel vapor is heavier than air and accumulates at floor level. Maintain active ventilation throughout.</div><div class="safety-line">⚠ Never use power tools near open fuel system.</div></div>
+          <div class="step-section tip-block"><div class="tip-line">✓ If adding a return bulkhead through the sending unit, drill the second hole before installing the sending unit in the tank — much easier on the bench.</div><div class="tip-line">✓ Route the return tube so it exits below the fuel level to prevent aeration — aerated fuel causes Sniper cavitation and vapor lock symptoms.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Tank safely lowered</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Sending unit installed with new lock ring seal</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Lock ring torqued: finger-tight + 1/4 turn only</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Float arm travel verified clear</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Return bulkhead installed if needed</span></label></div></div>
+        </div>
+      </div>
+      <div class="step-wrap" id="GUIDE-CC82-P2-s3">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 3</span>
+          <span class="step-name">Filler Neck, Vent System &amp; Tank Installation</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">Inspect the upper filler neck for rust or perforation before reinstallation — a rusted neck contaminates the new system. Install new filler and vent hose set with new hose clamps. Install new vent valve and grommet kit. Install new filler neck bezel and fuel neck grommet. Route vent hose per original path — incorrect vent routing causes tank pressure buildup and difficult fueling. Raise tank into position, install new straps with new hardware, torque strap bolts to 20-25 ft-lbs. Reconnect all lines. Add 2-3 gallons of fuel and verify sending unit circuit with multimeter before filling.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>Hose clamp pliers</li><li>Torque wrench (ft-lb)</li><li>Multimeter</li></ul></div>
+          <div class="step-section safety-block"><div class="safety-line">⚠ Cycle ignition key to RUN (not START) three times, pausing 3 seconds each, before first engine start — this primes the system and surfaces any leaks before the engine runs.</div></div>
+          <div class="step-section tip-block"><div class="tip-line">✓ Apply a small amount of petroleum jelly to hose ends before assembly — helps them seat fully without the force that distorts the hose.</div><div class="tip-line">✓ Inspect all connections from underneath after first start. Even correctly installed fittings can weep if not fully seated.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Upper filler neck inspected for rust</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All new filler and vent hoses installed with new clamps</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Vent valve and grommet kit installed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>New filler neck bezel and grommet installed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>New straps installed, torqued 20-25 ft-lbs</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>System primed before first start</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>No fuel leaks at any connection after first start</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Fuel pressure verified 58-65 PSI at Sniper inlet</span></label></div></div>
+        </div>
+      </div></div>
+      </div>
+
+      <!-- TOOLS -->
+      <div class="card-section">
+        <div class="card-sec-title teal-bar">TOOLS REQUIRED</div>
+        <ul class="tools-master"><li>Floor jack and jack stands</li><li>Transmission jack or tank support strap</li><li>Fuel line disconnect tools (EFI quick-connect style)</li><li>Spanner wrench (sending unit lock ring)</li><li>Hose clamp pliers</li><li>Multimeter</li><li>Fire extinguisher</li><li>Drain pan (5-gallon minimum)</li><li>EFI-rated hose clamps (included in Sniper kit)</li></ul>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="phase-card" id="GUIDE-CC82-P3">
+    <div class="phase-card-header" onclick="togglePhase(this)">
+      <div class="phase-index">#2</div>
+      <div class="phase-card-info">
+        <div class="phase-card-title">Exhaust System — Stainless Steel</div>
+        <div class="phase-card-meta">
+          <span class="diff-dot" style="background:#d4860a"></span>Intermediate
+          &nbsp;·&nbsp; ⏱ 10h
+          &nbsp;·&nbsp; 💰 $1,020
+        </div>
+      </div>
+      <div class="phase-arrow">›</div>
+    </div>
+
+    <div class="phase-body" hidden>
+
+      <p class="phase-desc-text">AMC 360 exhaust manifold replacement and full stainless steel exhaust system installation for the 1982 Cherokee Chief. Using sourced manifolds from Team Grand Wagoneer (with gaskets) and the BJ's Off-Road stainless FSJ exhaust kit — built specifically for 1980-1991 full-size Jeep wagons. Stainless is the correct spec for a $40k collector vehicle; it will not rust and is a selling point.</p>
+
+      <!-- TRACKARA ENTRY -->
+      <div class="card-section">
+        <div class="card-sec-title teal-bar">TRACKARA ENTRY</div>
+        <div class="copy-field">
+          <div class="copy-label">GUIDE TITLE</div>
+          <div class="copy-value" onclick="copyMe(this)">Exhaust System — Stainless Steel</div>
+        </div>
+        <div class="copy-field">
+          <div class="copy-label">DESCRIPTION <span class="char-note">(389/500)</span></div>
+          <div class="copy-value scrollable" onclick="copyMe(this)">AMC 360 exhaust manifold replacement and full stainless steel exhaust system installation for the 1982 Cherokee Chief. Using sourced manifolds from Team Grand Wagoneer (with gaskets) and the BJ's Off-Road stainless FSJ exhaust kit — built specifically for 1980-1991 full-size Jeep wagons. Stainless is the correct spec for a $40k collector vehicle; it will not rust and is a selling point.</div>
+        </div>
+        <div class="copy-field">
+          <div class="copy-label">TAGS</div>
+          <div class="copy-value" onclick="copyMe(this)">exhaust, stainless, amc360, manifolds, jeep, cherokee-chief, fsj, 1982</div>
+        </div>
+        <div class="copy-field">
+          <div class="copy-label">CATEGORY / DIFFICULTY</div>
+          <div class="copy-value">Exhaust / Intermediate</div>
+        </div>
+      </div>
+
+      <!-- PARTS -->
+      <div class="card-section">
+        <div class="card-sec-title dark-bar">PARTS — $1,020.00 est.</div>
+        <div class="parts-list">
+        <div class="part-row">
+          <div class="part-name"><a href="https://teamgrandwagoneer.com/exhaust-manifold-passenger-side-w-gasket-v8-360-401-gw-1974-1991/" target="_blank">Exhaust Manifold Passenger Side w/ Gasket V8 360/401 1974-1991</a></div>
+          <div class="part-meta">
+            <span class="part-source">Team Grand Wagoneer</span>
+            <span class="part-price">$255.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://teamgrandwagoneer.com/exhaust-manifold-driver-side-w-gasket-v8-360-401-gw-1974-1991/" target="_blank">Exhaust Manifold Driver Side w/ Gasket V8 360/401 1974-1991</a></div>
+          <div class="part-meta">
+            <span class="part-source">Team Grand Wagoneer</span>
+            <span class="part-price">$220.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://bjsoffroad.com/exhaust-kit-for-1980-1991-fsj-wagons-stainless-steel/" target="_blank">Stainless Steel Exhaust Kit 1980-1991 FSJ Wagons</a></div>
+          <div class="part-meta">
+            <span class="part-source">BJ's Off-Road</span>
+            <span class="part-price">$545.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div></div>
+      </div>
+
+      <!-- STEPS -->
+      <div class="card-section">
+        <div class="card-sec-title dark-bar">PROCEDURE — 3 STEPS</div>
+        <div class="steps-list">
+      <div class="step-wrap" id="GUIDE-CC82-P3-s1">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 1</span>
+          <span class="step-name">Manifold Removal</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">Apply penetrating oil to all manifold studs and nuts 24 hours before removal. Use 6-point sockets only — 12-point sockets round hardened manifold nuts under high torque. Apply heat with propane torch to each nut immediately before attempting removal — heat the nut, not the stud. Begin with the passenger side. Driver-side access on the SJ Cherokee is restricted by steering column and brake booster proximity. Broken studs are nearly certain on a 40-year-old AMC 360 — have a stud extractor and replacement 3/8&quot;-16 studs on hand. Chase all stud holes with a tap before installing new manifolds. Clean head surfaces with a gasket scraper — do not use an abrasive disc on aluminum head surfaces.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>6-point sockets</li><li>Breaker bar</li><li>Propane torch</li><li>Stud extractor</li><li>Thread tap</li></ul></div>
+          <div class="step-section safety-block"><div class="safety-line">⚠ Wear safety glasses — rust and debris from corroded manifold hardware falls directly toward your face in this working position.</div></div>
+          <div class="step-section tip-block"><div class="tip-line">✓ AMC 360 manifold stud thread size is 3/8&quot;-16. Have a tap and several replacement studs on hand — count on breaking at least one.</div><div class="tip-line">✓ After extraction, run a tap through every hole regardless of whether the stud broke — 40-year-old threads need cleaning.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Penetrating oil applied 24 hours prior</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Passenger side manifold removed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Driver side manifold removed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All broken studs extracted</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All stud holes tapped to clean threads</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Head surfaces cleaned of gasket material</span></label></div></div>
+        </div>
+      </div>
+      <div class="step-wrap" id="GUIDE-CC82-P3-s2">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 2</span>
+          <span class="step-name">Manifold Installation</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">Install new manifolds with included gaskets. Apply anti-seize to stud threads only — not the gasket face. Hand-start all nuts before torquing any to allow the gasket to seat evenly. Torque AMC 360 manifold nuts to 25-30 ft-lbs in a center-out sequence. Retorque once more in the same sequence — cast manifold gaskets relax after initial torque. After the first heat cycle, retorque when cold.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>Torque wrench (ft-lb)</li><li>Anti-seize</li></ul></div>
+          
+          <div class="step-section tip-block"><div class="tip-line">✓ Retorquing after the first heat cycle is the single most effective step to prevent manifold leaks long-term — add it to the 50-mile recheck list.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Anti-seize on stud threads (not gasket face)</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All nuts hand-started before torquing</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Passenger manifold torqued 25-30 ft-lbs center-out</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Driver manifold torqued 25-30 ft-lbs center-out</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Both manifolds retorqued</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Retorque scheduled at first heat cycle</span></label></div></div>
+        </div>
+      </div>
+      <div class="step-wrap" id="GUIDE-CC82-P3-s3">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 3</span>
+          <span class="step-name">Stainless Exhaust System Installation</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">Install the BJ's Off-Road stainless FSJ exhaust kit per its included instructions. This kit is built specifically for the 1980-1991 full-size Jeep wagon — it is not a universal system requiring custom fitting. Connect the front pipe to the driver-side manifold collector first with a new donut or flange gasket. Use all rubber hanger mounts — do not skip any. Confirm tailpipe exit clears the rear bumper and tire at full suspension droop (the 6&quot; lift adds droop travel — verify clearance at full stuff). Use new U-bolt clamps at all slip joints. Torque all clamps to 40-50 ft-lbs. After first heat cycle, inspect all joints.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>Torque wrench (ft-lb)</li><li>Floor jack for positioning</li></ul></div>
+          
+          <div class="step-section tip-block"><div class="tip-line">✓ With a 6&quot; lift, check tailpipe-to-frame and tailpipe-to-tire clearance more carefully than stock — the lifted geometry changes exhaust routing angles.</div><div class="tip-line">✓ Have an assistant support the rear of the system while tightening the front collector — letting the system weight hang on the front joint causes misalignment and leaks.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Front pipe connected to manifold with new gasket</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All hangers attached and supporting the system</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Tailpipe exit clear of bumper and tire at full droop</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All clamps installed and torqued 40-50 ft-lbs</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>System inspected for leaks after first heat cycle</span></label></div></div>
+        </div>
+      </div></div>
+      </div>
+
+      <!-- TOOLS -->
+      <div class="card-section">
+        <div class="card-sec-title teal-bar">TOOLS REQUIRED</div>
+        <ul class="tools-master"><li>Breaker bar and impact wrench</li><li>6-point sockets SAE (12-point rounds manifold nuts)</li><li>Torque wrench (ft-lb)</li><li>Thread tap set (3/8&quot;-16 for AMC 360 manifold studs)</li><li>Stud extractor set</li><li>Anti-seize compound</li><li>Propane torch</li><li>Floor jack for exhaust positioning</li><li>Penetrating oil (applied night before)</li></ul>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="phase-card" id="GUIDE-CC82-P1">
+    <div class="phase-card-header" onclick="togglePhase(this)">
+      <div class="phase-index">#3</div>
+      <div class="phase-card-info">
+        <div class="phase-card-title">Transmission — A727 TorqueFlite Rebuild</div>
+        <div class="phase-card-meta">
+          <span class="diff-dot" style="background:#c0392b"></span>Advanced
+          &nbsp;·&nbsp; ⏱ 24h
+          &nbsp;·&nbsp; 💰 $455
+        </div>
+      </div>
+      <div class="phase-arrow">›</div>
+    </div>
+
+    <div class="phase-body" hidden>
+
+      <p class="phase-desc-text">Full bench rebuild of the Chrysler A727 TorqueFlite 3-speed automatic behind the AMC 360. Includes TransGo TF-2 shift kit, billet low/reverse servo, new torque converter, and ATF+4 fluid. Goal is a zero-mile feel with firm, crisp shifts appropriate for a $40k collector vehicle.</p>
+
+      <!-- TRACKARA ENTRY -->
+      <div class="card-section">
+        <div class="card-sec-title teal-bar">TRACKARA ENTRY</div>
+        <div class="copy-field">
+          <div class="copy-label">GUIDE TITLE</div>
+          <div class="copy-value" onclick="copyMe(this)">Transmission — A727 TorqueFlite Rebuild</div>
+        </div>
+        <div class="copy-field">
+          <div class="copy-label">DESCRIPTION <span class="char-note">(278/500)</span></div>
+          <div class="copy-value scrollable" onclick="copyMe(this)">Full bench rebuild of the Chrysler A727 TorqueFlite 3-speed automatic behind the AMC 360. Includes TransGo TF-2 shift kit, billet low/reverse servo, new torque converter, and ATF+4 fluid. Goal is a zero-mile feel with firm, crisp shifts appropriate for a $40k collector vehicle.</div>
+        </div>
+        <div class="copy-field">
+          <div class="copy-label">TAGS</div>
+          <div class="copy-value" onclick="copyMe(this)">a727, torqueflite, transmission, rebuild, transgo, atf4, jeep, cherokee-chief, sj, 1982</div>
+        </div>
+        <div class="copy-field">
+          <div class="copy-label">CATEGORY / DIFFICULTY</div>
+          <div class="copy-value">Transmission / Advanced</div>
+        </div>
+      </div>
+
+      <!-- PARTS -->
+      <div class="card-section">
+        <div class="card-sec-title dark-bar">PARTS — $456.23 est.</div>
+        <div class="parts-list">
+        <div class="part-row">
+          <div class="part-name"><a href="https://www.jegs.com/i/JEGS/555/62114/10002/-1" target="_blank">Full Transmission Rebuild Kit</a></div>
+          <div class="part-meta">
+            <span class="part-source">JEGS</span>
+            <span class="part-price">$150.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://jeeprecyclers.com/1971-1991-transmission-mount-length-5-1-4/" target="_blank">Transmission Mount</a></div>
+          <div class="part-meta">
+            <span class="part-source">JeepRecyclers</span>
+            <span class="part-price">$16.65</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://www.summitracing.com/parts/trg-tf-2" target="_blank">TransGo Performance Shift Kit TF-2</a></div>
+          <div class="part-meta">
+            <span class="part-source">Summit Racing</span>
+            <span class="part-price">$88.71</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://www.ebay.com/itm/322009352473" target="_blank">Superior K029 A727 Billet Low/Reverse Servo</a></div>
+          <div class="part-meta">
+            <span class="part-source">eBay</span>
+            <span class="part-price">$52.95</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://www.amazon.com/gp/aw/d/B012GWF8EC" target="_blank">ATSG A727/904 Rebuild Manual</a></div>
+          <div class="part-meta">
+            <span class="part-source">Amazon</span>
+            <span class="part-price">$45.95</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name">Valvoline ATF+4 Full Synthetic (3 gallons)</div>
+          <div class="part-meta">
+            <span class="part-source">Amazon</span>
+            <span class="part-price">$101.97</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div></div>
+      </div>
+
+      <!-- STEPS -->
+      <div class="card-section">
+        <div class="card-sec-title dark-bar">PROCEDURE — 6 STEPS</div>
+        <div class="steps-list">
+      <div class="step-wrap" id="GUIDE-CC82-P1-s1">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 1</span>
+          <span class="step-name">Removal &amp; Fluid Diagnosis</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">Raise and support the vehicle on rated jack stands at all four frame points. Disconnect battery negative. Mark both driveshaft-to-yoke orientations before removal. Disconnect cooler lines, kickdown rod linkage, and all electrical connectors — photograph the kickdown geometry before disconnecting. Support the transfer case with a second jack before removing the transmission crossmember. Lower the assembly. On the bench, drain the pan and spread fluid on white paper towels: pink/light red = healthy, dark brown = oxidized friction material, burnt smell = overheated clutches, gray/milky = water intrusion, metallic flakes = bearing or planetary failure. Photograph pan debris before cleaning.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>Floor jack</li><li>Jack stands</li><li>Transmission jack</li><li>Drain pan</li></ul></div>
+          <div class="step-section safety-block"><div class="safety-line">⚠ The A727 + NP219 combination weighs approximately 200 lbs. Use a transmission jack rated for at least 500 lbs with safety chain secured before lowering.</div><div class="safety-line">⚠ Never work under a vehicle supported only by a floor jack.</div></div>
+          <div class="step-section tip-block"><div class="tip-line">✓ Keep drained fluid in a clear jar — let it settle 1 hour to separate metallic debris from oxidized fluid.</div><div class="tip-line">✓ Soak all crossmember bolts with penetrating oil the night before — they are almost universally rusted on a 40-year-old SJ Cherokee.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Battery negative disconnected</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Driveshaft orientations marked</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Cooler lines capped</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Kickdown linkage photographed and disconnected</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Crossmember removed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Fluid color/smell diagnosed and documented</span></label></div></div>
+        </div>
+      </div>
+      <div class="step-wrap" id="GUIDE-CC82-P1-s2">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 2</span>
+          <span class="step-name">Valve Body Removal &amp; Check Ball Mapping</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">The valve body is the most photograph-intensive step. The 1982 A727 uses 9 check balls that must return to exact positions. Photograph every passage in the valve body and separator plate with a macro lens before touching anything. Remove all valve body bolts — lengths vary by hole, bag them by location. Lower the valve body slowly and catch falling check balls in a magnetic tray. Count balls against your rebuild kit spec sheet.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>Macro camera</li><li>Magnetic tray</li><li>Labeled parts bags</li></ul></div>
+          <div class="step-section safety-block"><div class="safety-line">⚠ Never clean valve body components with anything abrasive. A single scratch on a valve bore causes pressure leaks impossible to diagnose without full reassembly.</div></div>
+          <div class="step-section tip-block"><div class="tip-line">✓ Print a diagram and mark each check ball position as you photograph it — your photos are more authoritative than the kit diagram for your specific unit.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All check ball positions photographed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Valve body bolts bagged by location</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Check ball count verified (should be 9 for 1982)</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Separator plate removed and set aside</span></label></div></div>
+        </div>
+      </div>
+      <div class="step-wrap" id="GUIDE-CC82-P1-s3">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 3</span>
+          <span class="step-name">TransGo TF-2 Shift Kit Installation</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">Install the TransGo TF-2 shift kit per the included instruction sheet. The TF-2 modifies the valve body hydraulic circuits to produce firmer, quicker shifts with reduced clutch slippage under load — directly improving durability and the driving feel expected of a $40k vehicle. The TF-2 includes a new separator plate with pre-drilled modifications; follow the instruction sheet exactly for which passages to open and which to leave closed for your application (street/mild performance). Install the billet low/reverse servo (Superior K029) at this stage — it replaces the factory aluminum servo piston with a larger, stronger billet unit that prevents servo bore wear.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>TransGo TF-2 kit contents</li><li>Superior K029 billet servo</li></ul></div>
+          
+          <div class="step-section tip-block"><div class="tip-line">✓ Read the full TransGo instruction sheet before beginning — it covers multiple A727 variants and the 1982 street application uses specific settings.</div><div class="tip-line">✓ The billet servo installs in the same bore as the factory unit. Clean the bore and verify the new servo moves freely before assembly.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>TransGo TF-2 separator plate installed per instructions</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Correct passages opened per street application spec</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Superior K029 billet servo installed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All check balls reinstalled per photo documentation</span></label></div></div>
+        </div>
+      </div>
+      <div class="step-wrap" id="GUIDE-CC82-P1-s4">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 4</span>
+          <span class="step-name">Governor &amp; Clutch Pack Service</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">Remove the governor from the output shaft with a puller — never pry. Clean all passages with compressed air, inspect flyweight pins, replace O-ring. Remove front pump (6 bolts at pry ears only), then front and rear clutch assemblies. Measure all friction discs with a micrometer — minimum 0.075&quot;, new is 0.091&quot;. Soak all new friction discs in ATF+4 for minimum 15 minutes before assembly. After assembly, measure clutch pack end clearance: front clutch 0.060–0.120&quot;, rear clutch 0.030–0.060&quot;. Select correct snap ring from kit to achieve mid-range spec.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>Governor puller</li><li>Micrometer</li><li>Feeler gauge</li><li>Snap ring pliers</li><li>ATF+4</li></ul></div>
+          <div class="step-section safety-block"><div class="safety-line">⚠ Do not pry the front pump at the gasket surface — use only the cast pry ears. The pump housing is aluminum and will crack.</div></div>
+          <div class="step-section tip-block"><div class="tip-line">✓ End clearance is the single most critical measurement in the rebuild. Too loose = slipping under load. Too tight = drag and heat. Use a dial indicator for best accuracy.</div><div class="tip-line">✓ Write your measured clearances on tape stuck to each drum — invaluable reference if a problem emerges on the road test.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Governor serviced and O-ring replaced</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Front pump removed via pry ears only</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All friction discs measured and documented</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>New discs soaked in ATF+4 minimum 15 min</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Front clutch end clearance set: 0.060–0.120&quot;</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Rear clutch end clearance set: 0.030–0.060&quot;</span></label></div></div>
+        </div>
+      </div>
+      <div class="step-wrap" id="GUIDE-CC82-P1-s5">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 5</span>
+          <span class="step-name">Case Cleaning, Pump Inspection &amp; Final Assembly</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">Hot tank the bare case. Blow all passages with compressed air and verify flow at each exit. Measure pump rotor side clearance: spec 0.0015–0.0025&quot;. Beyond 0.003&quot; requires pump replacement — do not assemble with a worn pump. Inspect and clean valve body per TransGo kit instructions. Assemble: pump with new seal torqued to 175 in-lbs; rear then front clutch; valve body with new gasket torqued to 100 in-lbs cross pattern (aluminum — do not overtighten); band adjustments per TransGo specs; new filter; pan with new gasket to 150 in-lbs max. Set bands: kickdown 72 in-lbs + back off 1.5 turns, rear 72 in-lbs + back off 4 turns (8-3/4&quot; ring gear spec). Torque jam nuts to 35 ft-lbs.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>Compressed air</li><li>Feeler gauge</li><li>Torque wrench (in-lb and ft-lb)</li></ul></div>
+          
+          <div class="step-section tip-block"><div class="tip-line">✓ After hot tanking, immediately blow all passages and apply a light ATF coat to machined surfaces — cast iron flash-rusts within hours in a humid shop.</div><div class="tip-line">✓ When installing the valve body, start all bolts finger-tight before torquing any — the gasket must seat evenly.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Case cleaned and all passages verified</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Pump clearance within 0.0015–0.0025&quot;</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Pump installed, torqued 175 in-lbs</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Clutches installed and seated on shafts</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Valve body installed, torqued 100 in-lbs cross pattern</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Kickdown band: 72 in-lbs → back 1.5 turns</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Rear band: 72 in-lbs → back 4 turns</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Both jam nuts torqued 35 ft-lbs</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>New filter and pan installed</span></label></div></div>
+        </div>
+      </div>
+      <div class="step-wrap" id="GUIDE-CC82-P1-s6">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 6</span>
+          <span class="step-name">Reinstallation &amp; Road Test</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">Reinstall transmission and transfer case on crossmember. Reconnect kickdown linkage per original geometry photographs. Reconnect all electrical and cooler lines. Fill with ATF+4 — approximately 4 quarts initial fill. Start engine, shift slowly through R-N-D-2-1 pausing 3-5 seconds each range. Add fluid to dipstick at operating temp in Park. Road test: firm engagement in Reverse, smooth 1-2 at 15-20 mph and 2-3 at 28-38 mph under light throttle. Kickdown should produce a sharp downshift at approximately 80% throttle. Recheck fluid level and cooler line fittings at 50 miles.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>ATF+4 (3 gallons minimum on hand)</li><li>Torque wrench</li></ul></div>
+          
+          <div class="step-section tip-block"><div class="tip-line">✓ If the transmission hunts between gears, verify band adjustment before assuming a valve body or clutch problem — bands are adjusted externally and are the fastest variable to eliminate.</div><div class="tip-line">✓ ATF+4 is the correct modern spec. Earlier Jeep/Chrysler manuals reference Dexron — ATF+4 is backward-compatible and significantly better for seal compatibility.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Transmission reinstalled and crossmember torqued</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Kickdown linkage geometry verified</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All electrical and cooler lines connected</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Fluid level set at operating temperature</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Shift points within spec on road test</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>No leaks at cooler line fittings at 50 miles</span></label></div></div>
+        </div>
+      </div></div>
+      </div>
+
+      <!-- TOOLS -->
+      <div class="card-section">
+        <div class="card-sec-title teal-bar">TOOLS REQUIRED</div>
+        <ul class="tools-master"><li>Transmission jack</li><li>Floor jack and rated jack stands (4 minimum)</li><li>Torque wrench (ft-lb and in-lb)</li><li>Feeler gauge set</li><li>Micrometer (0-1&quot; range)</li><li>Dial indicator with magnetic base</li><li>Compressed air</li><li>Parts washer / solvent tank</li><li>Lint-free shop rags ONLY — no terry cloth</li><li>Small magnetic tray for check balls</li><li>Macro camera for valve body documentation</li><li>Snap ring pliers</li><li>800-grit and 1500-grit crocus cloth</li></ul>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="phase-card" id="GUIDE-CC82-P6">
+    <div class="phase-card-header" onclick="togglePhase(this)">
+      <div class="phase-index">#4</div>
+      <div class="phase-card-info">
+        <div class="phase-card-title">Suspension, Lift &amp; AWD Driveline</div>
+        <div class="phase-card-meta">
+          <span class="diff-dot" style="background:#c0392b"></span>Advanced
+          &nbsp;·&nbsp; ⏱ 40h
+          &nbsp;·&nbsp; 💰 $1,187
+        </div>
+      </div>
+      <div class="phase-arrow">›</div>
+    </div>
+
+    <div class="phase-body" hidden>
+
+      <p class="phase-desc-text">6-inch suspension lift, complete narrow-track steering refresh, NP219 Quadra-Trac transfer case rebuild, Dana 44 front axle bearing/seal/U-joint service, AMC 20 rear axle bearing/seal service, driveshaft U-joints, Rancho RS5000 steering damper, polyurethane body mounts, and Fluid Film Black undercoating. This is the phase that transforms the Cherokee Chief from a driver to a proper stance — 33x12.50R15 on restored white wagon wheels.</p>
+
+      <!-- TRACKARA ENTRY -->
+      <div class="card-section">
+        <div class="card-sec-title teal-bar">TRACKARA ENTRY</div>
+        <div class="copy-field">
+          <div class="copy-label">GUIDE TITLE</div>
+          <div class="copy-value" onclick="copyMe(this)">Suspension, Lift &amp; AWD Driveline</div>
+        </div>
+        <div class="copy-field">
+          <div class="copy-label">DESCRIPTION <span class="char-note">(437/500)</span></div>
+          <div class="copy-value scrollable" onclick="copyMe(this)">6-inch suspension lift, complete narrow-track steering refresh, NP219 Quadra-Trac transfer case rebuild, Dana 44 front axle bearing/seal/U-joint service, AMC 20 rear axle bearing/seal service, driveshaft U-joints, Rancho RS5000 steering damper, polyurethane body mounts, and Fluid Film Black undercoating. This is the phase that transforms the Cherokee Chief from a driver to a proper stance — 33x12.50R15 on restored white wagon wheels.</div>
+        </div>
+        <div class="copy-field">
+          <div class="copy-label">TAGS</div>
+          <div class="copy-value" onclick="copyMe(this)">suspension, lift, 6-inch, np219, amc20, dana44, u-joints, undercoating, jeep, cherokee-chief, 1982</div>
+        </div>
+        <div class="copy-field">
+          <div class="copy-label">CATEGORY / DIFFICULTY</div>
+          <div class="copy-value">Suspension / Drivetrain / Advanced</div>
+        </div>
+      </div>
+
+      <!-- PARTS -->
+      <div class="card-section">
+        <div class="card-sec-title dark-bar">PARTS — $1,186.91 est.</div>
+        <div class="parts-list">
+        <div class="part-row">
+          <div class="part-name">1974-1991 Narrow Track Complete Steering Tie Rod Kit with Ball Joints</div>
+          <div class="part-meta">
+            <span class="part-source">JeepRecyclers</span>
+            <span class="part-price">$499.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://teamgrandwagoneer.com/prothane-body-mount-kit-gw-1974-1991/" target="_blank">Prothane Body Mount Kit 1974-1991</a></div>
+          <div class="part-meta">
+            <span class="part-source">Team Grand Wagoneer</span>
+            <span class="part-price">$150.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://www.summitracing.com/parts/sdh-5-760x" target="_blank">Spicer 5-760X Front Axle U-Joints (need 2)</a></div>
+          <div class="part-meta">
+            <span class="part-source">Summit Racing</span>
+            <span class="part-price">$61.98</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://www.summitracing.com/parts/sdh-5-153x" target="_blank">Spicer 5-153X Driveshaft U-Joints (need 4)</a></div>
+          <div class="part-meta">
+            <span class="part-source">Summit Racing</span>
+            <span class="part-price">$63.96</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://bjsoffroad.com/amc-20-rear-axle-bearing-and-seal-kit/" target="_blank">AMC 20 Rear Axle Bearing and Seal Kit</a></div>
+          <div class="part-meta">
+            <span class="part-source">BJ's Off-Road</span>
+            <span class="part-price">$75.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://cobratransmission.com/np-228-np-229-bearing-kit-55017001-1" target="_blank">NP228/229 Transfer Case Bearing, Gasket and Seal Kit (fits NP219)</a></div>
+          <div class="part-meta">
+            <span class="part-source">Cobra Transmission</span>
+            <span class="part-price">$189.99</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name">Fluid Film 1 Gallon Black Undercoating</div>
+          <div class="part-meta">
+            <span class="part-source">O'Reilly</span>
+            <span class="part-price">$56.99</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name">Rancho RS5000 Steering Damper RS5407</div>
+          <div class="part-meta">
+            <span class="part-source">O'Reilly</span>
+            <span class="part-price">$89.99</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div></div>
+      </div>
+
+      <!-- STEPS -->
+      <div class="card-section">
+        <div class="card-sec-title dark-bar">PROCEDURE — 5 STEPS</div>
+        <div class="steps-list">
+      <div class="step-wrap" id="GUIDE-CC82-P6-s1">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 1</span>
+          <span class="step-name">Fluid Film Undercoating — Pre-Suspension</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">Apply Fluid Film Black to all cleaned and primed undercarriage surfaces BEFORE suspension components are reinstalled. This is the correct sequence — applying after suspension installation leaves large unprotected areas behind brackets and axle housings. Mask all brake surfaces. Apply two wet coats to frame rails, floor pan underside, crossmembers, and inner fenders. Extra coat on all weld seams. Fluid Film is a lanolin-based corrosion inhibitor — it must be reapplied every 2-3 years, or annually in road salt environments.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>Fluid Film brush</li><li>Masking tape</li></ul></div>
+          <div class="step-section safety-block"><div class="safety-line">⚠ Fluid Film is combustible — do not apply near open flames.</div></div>
+          <div class="step-section tip-block"><div class="tip-line">✓ Warm the can in warm water before application in cold weather — cold Fluid Film is thick and does not penetrate seams as effectively.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All brake surfaces masked</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Two wet coats on frame rails</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Two wet coats on floor pan underside</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Crossmembers and inner fenders coated</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All weld seams given additional coat</span></label></div></div>
+        </div>
+      </div>
+      <div class="step-wrap" id="GUIDE-CC82-P6-s2">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 2</span>
+          <span class="step-name">6-Inch Suspension Lift &amp; Body Mounts</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">Install the 6-inch suspension lift kit per its included instructions. On the SJ Cherokee, a 6&quot; lift typically uses a combination of coil spacers or replacement coils (front) and add-a-leaf or replacement leaf springs (rear), depending on the specific kit. Verify the lift kit is rated for the SJ Cherokee narrow-track application — some FSJ lift kits fit the wide-track Grand Wagoneer but not the narrow-track Cherokee Chief. Install Prothane polyurethane body mounts simultaneously — support the body independently from the frame, replace one mount location at a time, apply Prothane grease to all bushings, torque hardware to 30 ft-lbs. Note: poly mounts transmit more NVH than rubber — expected and normal.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>Floor jack</li><li>Jack stands</li><li>Wooden body support blocks</li><li>Torque wrench</li></ul></div>
+          <div class="step-section safety-block"><div class="safety-line">⚠ Never remove all body mount hardware simultaneously — the body-to-frame junction maintains structural rigidity on the SJ.</div></div>
+          <div class="step-section tip-block"><div class="tip-line">✓ A 6&quot; lift on the SJ Cherokee will require a driveshaft angle check after installation — steep driveshaft angles cause vibration and premature U-joint wear.</div><div class="tip-line">✓ Recheck body mount hardware torque at 500 miles — polyurethane compresses slightly under initial load.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>6&quot; lift kit installed per kit instructions</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Front and rear lift components correctly installed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All body mounts replaced one at a time</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Body mount hardware torqued 30 ft-lbs</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Driveshaft angles checked after lift</span></label></div></div>
+        </div>
+      </div>
+      <div class="step-wrap" id="GUIDE-CC82-P6-s3">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 3</span>
+          <span class="step-name">NP219 Transfer Case Rebuild</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">Rebuild the NP219 Quadra-Trac transfer case using the Cobra Transmission bearing and seal kit. The NP219 is a chain-drive full-time AWD unit with a viscous coupler — the rebuild goal is zero binding. Photograph all shim locations before disassembly. Replace all bearings pressing in squarely with correct drivers. Replace all seals. Measure drive chain: if a 12-link section exceeds approximately 9&quot; (1/4&quot; stretch beyond nominal), replace the chain. Inspect viscous coupler — if the coupler shows binding or excessive heat history, consider replacement. Reassemble with original shims. Fill with ATF+4 — NOT gear oil, NOT Dexron.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>Bearing race driver set</li><li>Seal driver set</li><li>Snap ring pliers</li><li>Dial indicator</li></ul></div>
+          
+          <div class="step-section tip-block"><div class="tip-line">✓ ATF+4 is the correct fluid for the NP219 Quadra-Trac — using gear oil damages the viscous coupler seals and causes the binding the rebuild is meant to eliminate.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All shim locations photographed before disassembly</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All bearings replaced</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All seals replaced</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Chain stretch measured — within spec or replaced</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Viscous coupler inspected</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Reassembled with original shims</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Filled with ATF+4</span></label></div></div>
+        </div>
+      </div>
+      <div class="step-wrap" id="GUIDE-CC82-P6-s4">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 4</span>
+          <span class="step-name">Dana 44 Front Axle — Bearings, Seals &amp; U-Joints</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">Service the Dana 44 front axle: replace wheel bearings and seals, replace both front axle U-joints (Spicer 5-760X). The Dana 44 uses a solid front axle with full-floating hubs on the SJ Cherokee. Remove hubs and axle shafts to access bearings, seals, and U-joints. Press new bearings squarely with correct driver. Drive new seals with seal driver. Press new 5-760X U-joints with C-clamp press — never hammer. Install all snap rings. Verify joints move freely with no binding. Pack hub bearings with quality wheel bearing grease before reassembly.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>Bearing race driver set</li><li>Seal driver set</li><li>U-joint press</li><li>Snap ring pliers</li><li>Grease gun</li></ul></div>
+          
+          <div class="step-section tip-block"><div class="tip-line">✓ Press each U-joint bearing cup until the snap ring groove is just accessible — pressing too deep binds the needle bearings against the bottom of the cup.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Dana 44 front wheel bearings replaced (both sides)</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Axle seals replaced (both sides)</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Front axle U-joints (5-760X) replaced (both sides)</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All snap rings installed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All joints verified free of binding</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Hub bearings packed with wheel bearing grease</span></label></div></div>
+        </div>
+      </div>
+      <div class="step-wrap" id="GUIDE-CC82-P6-s5">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 5</span>
+          <span class="step-name">AMC 20 Rear Axle, Driveshaft U-Joints &amp; Steering</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">Service AMC 20 rear axle: replace wheel bearings and seals using BJ's Off-Road kit. Remove 1-piece axle shafts (6 bolts each). Press new bearings and drive new seals. Check axle shaft end play with dial indicator after reinstallation — spec 0.010–0.025&quot;. Replace all four driveshaft U-joints (Spicer 5-153X) using bench vise press. Mark driveshaft orientation before removal. Install Rancho RS5407 steering damper — torque both ends to 45 ft-lbs. Install complete narrow-track tie rod and ball joint kit — torque upper ball joints to 75 ft-lbs, lower to 100 ft-lbs, install all cotter pins. A professional wheel alignment is mandatory after this step.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>Bearing race driver set</li><li>Seal driver set</li><li>U-joint press</li><li>Bench vise</li><li>Dial indicator</li><li>Torque wrench</li></ul></div>
+          <div class="step-section safety-block"><div class="safety-line">⚠ Ball joint cotter pins are mandatory — a nut that backs off causes immediate loss of steering control.</div></div>
+          <div class="step-section tip-block"><div class="tip-line">✓ The 1-piece AMC 20 axle shafts are a strength upgrade over the 2-piece factory design — confirm yours are 1-piece before ordering bearing kits as the hardware differs.</div><div class="tip-line">✓ Professional alignment after any tie rod or ball joint work is not optional — the 6&quot; lift changes all alignment geometry.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>AMC 20 wheel bearings and seals replaced (both sides)</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Axle end play verified 0.010–0.025&quot;</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All four driveshaft U-joints (5-153X) replaced</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Rancho RS5407 steering damper installed, torqued 45 ft-lbs</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Complete tie rod and ball joint kit installed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Ball joint torques correct with cotter pins installed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Professional wheel alignment scheduled</span></label></div></div>
+        </div>
+      </div></div>
+      </div>
+
+      <!-- TOOLS -->
+      <div class="card-section">
+        <div class="card-sec-title teal-bar">TOOLS REQUIRED</div>
+        <ul class="tools-master"><li>Floor jack and jack stands (4 minimum)</li><li>Pickle fork or ball joint press</li><li>Tie rod end puller</li><li>U-joint press (C-clamp style)</li><li>Snap ring pliers</li><li>Bearing race and seal driver set</li><li>Dial indicator</li><li>Torque wrench (ft-lb)</li><li>Grease gun</li><li>Penetrating oil</li><li>Rubber mallet</li><li>Fluid Film application brush</li></ul>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="phase-card" id="GUIDE-CC82-P5">
+    <div class="phase-card-header" onclick="togglePhase(this)">
+      <div class="phase-index">#5</div>
+      <div class="phase-card-info">
+        <div class="phase-card-title">Metal Work &amp; Rust Repair</div>
+        <div class="phase-card-meta">
+          <span class="diff-dot" style="background:#c0392b"></span>Advanced
+          &nbsp;·&nbsp; ⏱ 40h
+          &nbsp;·&nbsp; 💰 $860
+        </div>
+      </div>
+      <div class="phase-arrow">›</div>
+    </div>
+
+    <div class="phase-body" hidden>
+
+      <p class="phase-desc-text">Full floor pan replacement and body rust repair for the 1982 Cherokee Chief. Front, middle, and rear floor pans (all six pieces), outer rocker panels, rear lower quarter dog legs, plus additional rust repair noted above rear wheel arches, below taillights, front fenders, and roof. This phase gates all interior and paint work — it must be 100% complete before Phase 6 or 7 begin.</p>
+
+      <!-- TRACKARA ENTRY -->
+      <div class="card-section">
+        <div class="card-sec-title teal-bar">TRACKARA ENTRY</div>
+        <div class="copy-field">
+          <div class="copy-label">GUIDE TITLE</div>
+          <div class="copy-value" onclick="copyMe(this)">Metal Work &amp; Rust Repair</div>
+        </div>
+        <div class="copy-field">
+          <div class="copy-label">DESCRIPTION <span class="char-note">(380/500)</span></div>
+          <div class="copy-value scrollable" onclick="copyMe(this)">Full floor pan replacement and body rust repair for the 1982 Cherokee Chief. Front, middle, and rear floor pans (all six pieces), outer rocker panels, rear lower quarter dog legs, plus additional rust repair noted above rear wheel arches, below taillights, front fenders, and roof. This phase gates all interior and paint work — it must be 100% complete before Phase 6 or 7 begin.</div>
+        </div>
+        <div class="copy-field">
+          <div class="copy-label">TAGS</div>
+          <div class="copy-value" onclick="copyMe(this)">metalwork, rust-repair, floor-pans, rockers, dog-legs, welding, jeep, cherokee-chief, 1982</div>
+        </div>
+        <div class="copy-field">
+          <div class="copy-label">CATEGORY / DIFFICULTY</div>
+          <div class="copy-value">Bodywork / Advanced</div>
+        </div>
+      </div>
+
+      <!-- PARTS -->
+      <div class="card-section">
+        <div class="card-sec-title dark-bar">PARTS — $1,134.00 est.</div>
+        <div class="parts-list">
+        <div class="part-row">
+          <div class="part-name"><a href="https://bjsoffroad.com/floor-pan-front-driver-side/" target="_blank">Front Floor Pan Driver Side</a></div>
+          <div class="part-meta">
+            <span class="part-source">BJ's Off-Road</span>
+            <span class="part-price">$105.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://bjsoffroad.com/floor-pan-front-passenger-side/" target="_blank">Front Floor Pan Passenger Side</a></div>
+          <div class="part-meta">
+            <span class="part-source">BJ's Off-Road</span>
+            <span class="part-price">$105.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name">Middle Floor Pan Corner Piece Driver Side</div>
+          <div class="part-meta">
+            <span class="part-source">BJ's Off-Road</span>
+            <span class="part-price">$32.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name">Middle Floor Pan Corner Piece Passenger Side</div>
+          <div class="part-meta">
+            <span class="part-source">BJ's Off-Road</span>
+            <span class="part-price">$32.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://bjsoffroad.com/floor-pan-rear-passenger-side/" target="_blank">Rear Floor Pan Passenger Side</a></div>
+          <div class="part-meta">
+            <span class="part-source">BJ's Off-Road</span>
+            <span class="part-price">$145.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://bjsoffroad.com/floor-pan-rear-driver-side/" target="_blank">Rear Floor Pan Driver Side</a></div>
+          <div class="part-meta">
+            <span class="part-source">BJ's Off-Road</span>
+            <span class="part-price">$145.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://jeeprecyclers.com/full-size-jeep-1963-1991-4-door-wagoneer-grand-wagoneer-cherokee-dog-leg-sheet-metal-repair-panel/" target="_blank">Dog Leg Sheet Metal Repair Panel (pair)</a></div>
+          <div class="part-meta">
+            <span class="part-source">JeepRecyclers</span>
+            <span class="part-price">$180.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://bjsoffroad.com/rocker-panel-4-door-wagon-left-or-right/" target="_blank">Rocker Panel 4-Door (each — need 2)</a></div>
+          <div class="part-meta">
+            <span class="part-source">BJ's Off-Road</span>
+            <span class="part-price">$290.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name">Miscellaneous sheet metal for wheel arches, fenders, roof, taillights</div>
+          <div class="part-meta">
+            <span class="part-source">Shop stock / local</span>
+            <span class="part-price">$100.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div></div>
+      </div>
+
+      <!-- STEPS -->
+      <div class="card-section">
+        <div class="card-sec-title dark-bar">PROCEDURE — 4 STEPS</div>
+        <div class="steps-list">
+      <div class="step-wrap" id="GUIDE-CC82-P5-s1">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 1</span>
+          <span class="step-name">Rust Assessment &amp; Repair Map</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">Probe every suspect surface with an awl or ice pick. Primary rust sites on the SJ Cherokee: floor pans (water pools at firewall base and rear of cab), rocker inner and outer skins, rear lower quarters (dog legs), above rear wheel arches, below taillights, front fenders, and roof seams. Photograph every area before cutting. Mark fuel and brake line locations — protect them before grinding or welding. Establish repair sequence: floors first (structural), then rockers, then quarters and body panels.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>Awl</li><li>Camera</li></ul></div>
+          <div class="step-section safety-block"><div class="safety-line">⚠ Mark and protect all fuel lines and brake lines before any grinding or cutting — these run along the floor and frame.</div></div>
+          <div class="step-section tip-block"><div class="tip-line">✓ Tap suspect metal with a screwdriver handle — solid metal rings, rust-compromised metal produces a dull thud. Faster than probing every square inch.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Full floor probed and rust areas mapped</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Rocker condition documented</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Quarter and arch areas documented</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Fuel and brake line locations marked and protected</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Repair sequence established</span></label></div></div>
+        </div>
+      </div>
+      <div class="step-wrap" id="GUIDE-CC82-P5-s2">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 2</span>
+          <span class="step-name">Floor Pan Replacement — All Six Sections</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">Remove front, middle, and rear floor pan sections. Use spot weld drill bit at all flanges — never cut through the flange with a grinder. Use air hammer to separate pan from flange after spot welds are drilled. Inspect and replace seat belt anchor plates if rust-compromised — a corroded anchor plate is a safety failure regardless of torque. Apply weld-through primer to all mating flanges on new panels and existing metal. Tack-weld in position using Clecos, then stitch-weld in 1&quot; beads with 1&quot; gaps alternating around the perimeter to control heat distortion. Grind all welds flush. Seam seal all weld seams inside and underside. Apply epoxy primer to all bare metal immediately.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>MIG welder</li><li>Angle grinder</li><li>Spot weld drill</li><li>Air hammer</li><li>Cleco fasteners</li><li>Seam sealer</li><li>Epoxy primer</li></ul></div>
+          <div class="step-section safety-block"><div class="safety-line">⚠ Stitch welding controls heat distortion — never run a continuous bead on sheet metal floor pans.</div><div class="safety-line">⚠ Have fire extinguisher within arm's reach — floor area retains grease and debris that ignites easily.</div></div>
+          <div class="step-section tip-block"><div class="tip-line">✓ Run your hand over the floor after grinding welds — high spots are immediately apparent before primer goes on.</div><div class="tip-line">✓ Apply seam sealer before Fluid Film undercoating (Phase 7) — seam sealer penetrates where undercoating alone cannot.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All six floor pan sections removed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Seat belt anchor plates inspected and replaced if compromised</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All panels test-fit before welding</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All panels stitch-welded and welds ground flush</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All seams sealed inside and underside</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Epoxy primer applied to all bare metal</span></label></div></div>
+        </div>
+      </div>
+      <div class="step-wrap" id="GUIDE-CC82-P5-s3">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 3</span>
+          <span class="step-name">Rocker Panels &amp; Dog Legs</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">Remove outer rocker panels. NOTE: Rockers are $290 each — budget for both sides ($580 total). Before installing outer skins, thoroughly inspect inner rocker structure and repair any perforation with new steel. Weld outer skins with stitch welds at pinch flange. Dog legs: cut out rusted section leaving 1&quot; margins on all sides, test-fit replacement panels, stitch-weld, grind, apply thin-coat body filler to achieve smooth transition (never exceed 1/4&quot; filler depth). Feather to adjacent panel with DA sander.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>MIG welder</li><li>Angle grinder</li><li>Body filler</li><li>DA sander</li></ul></div>
+          
+          <div class="step-section tip-block"><div class="tip-line">✓ Measure body sill height from ground at multiple points before and after rocker installation — confirms no bow or twist was introduced.</div><div class="tip-line">✓ Body filler depth limit is 1/4&quot; maximum. Weld the metal correctly and use filler only for the final surface transition.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Inner rockers inspected and repaired if needed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Outer rockers (pair) installed and stitch-welded</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Dog legs (pair) installed and stitch-welded</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All welds dressed and sealed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Body filler applied in thin coats — max 1/4&quot; depth</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Epoxy primer applied to all bare metal</span></label></div></div>
+        </div>
+      </div>
+      <div class="step-wrap" id="GUIDE-CC82-P5-s4">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 4</span>
+          <span class="step-name">Additional Rust Repair — Arches, Fenders, Taillights, Roof</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">Address all remaining rust areas identified in Step 1: above rear wheel arches (both sides), below taillights, front fenders, and any roof seam rust. Use the same methodology: cut to clean metal margins, test-fit patches from shop stock or sourced sheet metal, stitch-weld, grind, body filler as needed, epoxy prime. On the roof, be particularly careful to identify whether rust is surface or structural — structural roof rust is rare on SJs but must be addressed before paint. Seal all repaired seams thoroughly before Phase 7 undercoating.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>MIG welder</li><li>Angle grinder</li><li>Body filler</li><li>DA sander</li></ul></div>
+          
+          <div class="step-section tip-block"><div class="tip-line">✓ Above-arch rust on the SJ Cherokee is typically surface to moderate — if it hasn't perforated, aggressive wire wheel cleaning followed by rust converter and epoxy primer may be sufficient without cutting.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Rear wheel arch areas repaired (both sides)</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Below taillights repaired</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Front fenders repaired</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Roof seams inspected and repaired if needed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All areas sealed and epoxy primed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Surface uniformly ready for Phase 8 paint prep</span></label></div></div>
+        </div>
+      </div></div>
+      </div>
+
+      <!-- TOOLS -->
+      <div class="card-section">
+        <div class="card-sec-title teal-bar">TOOLS REQUIRED</div>
+        <ul class="tools-master"><li>MIG welder (minimum 140A)</li><li>Angle grinder with flap disc (40-grit) and cut-off wheel</li><li>Spot weld drill bit (3/8&quot;)</li><li>Air hammer or body hammer and dolly</li><li>Cleco fasteners or sheet metal screws</li><li>Weld-through primer</li><li>Wire brush and angle grinder wire cup</li><li>Seam sealer</li><li>Epoxy primer</li><li>DA sander with 80-grit</li><li>Body filler and spreader</li><li>Fire extinguisher</li></ul>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="phase-card" id="GUIDE-CC82-P4">
+    <div class="phase-card-header" onclick="togglePhase(this)">
+      <div class="phase-index">#6</div>
+      <div class="phase-card-info">
+        <div class="phase-card-title">Engine Bay — Vintage Air A/C &amp; Mechanical Service</div>
+        <div class="phase-card-meta">
+          <span class="diff-dot" style="background:#d4860a"></span>Intermediate
+          &nbsp;·&nbsp; ⏱ 16h
+          &nbsp;·&nbsp; 💰 $1,311
+        </div>
+      </div>
+      <div class="phase-arrow">›</div>
+    </div>
+
+    <div class="phase-body" hidden>
+
+      <p class="phase-desc-text">Engine bay restoration for the 1982 Cherokee Chief: Vintage Air universal A/C system with EZ-Clip hose kit, aluminum coolant overflow and washer fluid tanks, hood insulation, valve cover gaskets, PCV valve, breather cap, and heater hoses. The Holley Sniper EFI is already installed — this phase completes the engine bay to a clean, correct-spec condition consistent with the $40k target.</p>
+
+      <!-- TRACKARA ENTRY -->
+      <div class="card-section">
+        <div class="card-sec-title teal-bar">TRACKARA ENTRY</div>
+        <div class="copy-field">
+          <div class="copy-label">GUIDE TITLE</div>
+          <div class="copy-value" onclick="copyMe(this)">Engine Bay — Vintage Air A/C &amp; Mechanical Service</div>
+        </div>
+        <div class="copy-field">
+          <div class="copy-label">DESCRIPTION <span class="char-note">(387/500)</span></div>
+          <div class="copy-value scrollable" onclick="copyMe(this)">Engine bay restoration for the 1982 Cherokee Chief: Vintage Air universal A/C system with EZ-Clip hose kit, aluminum coolant overflow and washer fluid tanks, hood insulation, valve cover gaskets, PCV valve, breather cap, and heater hoses. The Holley Sniper EFI is already installed — this phase completes the engine bay to a clean, correct-spec condition consistent with the $40k target.</div>
+        </div>
+        <div class="copy-field">
+          <div class="copy-label">TAGS</div>
+          <div class="copy-value" onclick="copyMe(this)">engine-bay, vintage-air, ac, cooling, amc360, sniper-efi, jeep, cherokee-chief, 1982</div>
+        </div>
+        <div class="copy-field">
+          <div class="copy-label">CATEGORY / DIFFICULTY</div>
+          <div class="copy-value">Engine Bay / Intermediate</div>
+        </div>
+      </div>
+
+      <!-- PARTS -->
+      <div class="card-section">
+        <div class="card-sec-title dark-bar">PARTS — $1,310.57 est.</div>
+        <div class="parts-list">
+        <div class="part-row">
+          <div class="part-name"><a href="https://bjsoffroad.com/aluminum-washer-fluid-tank/" target="_blank">Aluminum Washer Fluid Tank</a></div>
+          <div class="part-meta">
+            <span class="part-source">BJ's Off-Road</span>
+            <span class="part-price">$190.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://bjsoffroad.com/aluminum-coolant-overflow-tank-kit/" target="_blank">Aluminum Coolant Overflow Tank Kit</a></div>
+          <div class="part-meta">
+            <span class="part-source">BJ's Off-Road</span>
+            <span class="part-price">$195.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://vintageair.com/ez-clip-universal-hose-kit/" target="_blank">Vintage Air Full Universal A/C Kit Lines (EZ-Clip)</a></div>
+          <div class="part-meta">
+            <span class="part-source">Vintage Air</span>
+            <span class="part-price">$463.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://vintageair.com/standard-painted-drier-with-binary-switch-and-mounting-hardware/" target="_blank">Standard Painted Drier with Binary Switch and Mounting Hardware</a></div>
+          <div class="part-meta">
+            <span class="part-source">Vintage Air</span>
+            <span class="part-price">$50.80</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name">Hose Clamps Stainless (assortment)</div>
+          <div class="part-meta">
+            <span class="part-source">Amazon</span>
+            <span class="part-price">$11.89</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name">Universal Heater Hose 5/8&quot; x 6ft</div>
+          <div class="part-meta">
+            <span class="part-source">O'Reilly</span>
+            <span class="part-price">$15.99</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name">Universal Heater Hose 3/4&quot; x 6ft</div>
+          <div class="part-meta">
+            <span class="part-source">O'Reilly</span>
+            <span class="part-price">$15.99</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://www.fsjjeepparts.com/j3181291.html" target="_blank">Cork Valve Cover Gasket Set AMC 304/360/401 1970-1980</a></div>
+          <div class="part-meta">
+            <span class="part-source">FSJ Jeep Parts</span>
+            <span class="part-price">$20.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name">Engine Oil Filler Breather Cap V8 AMC 360/401 1974-1991</div>
+          <div class="part-meta">
+            <span class="part-source">Team Grand Wagoneer</span>
+            <span class="part-price">$14.95</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name">PCV Valve V8-360 1979-1991</div>
+          <div class="part-meta">
+            <span class="part-source">Team Grand Wagoneer</span>
+            <span class="part-price">$5.95</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://bjsoffroad.com/hood-insulation-kit/" target="_blank">Hood Insulation Kit</a></div>
+          <div class="part-meta">
+            <span class="part-source">BJ's Off-Road</span>
+            <span class="part-price">$127.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name">Restoration of remaining parts, paint, fuel lines, hood latch, cleaning</div>
+          <div class="part-meta">
+            <span class="part-source">Shop supplies</span>
+            <span class="part-price">$150.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name">Oil change and filter</div>
+          <div class="part-meta">
+            <span class="part-source">Local</span>
+            <span class="part-price">$50.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div></div>
+      </div>
+
+      <!-- STEPS -->
+      <div class="card-section">
+        <div class="card-sec-title dark-bar">PROCEDURE — 3 STEPS</div>
+        <div class="steps-list">
+      <div class="step-wrap" id="GUIDE-CC82-P4-s1">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 1</span>
+          <span class="step-name">A/C System — Vintage Air EZ-Clip Installation</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">Recover any existing refrigerant with certified equipment — venting is illegal regardless of refrigerant type or system age. Remove old compressor, receiver-drier, and all hoses. Install new compressor (verify clutch gap 0.016–0.031&quot;). Build the hose system using Vintage Air's EZ-Clip universal kit per its instructions — measure each run carefully before crimping, EZ-Clip hoses cannot be uncrimped. Install the new receiver-drier last, immediately before evacuation — the desiccant absorbs moisture the moment protective caps are removed. Torque all A/C fittings to the specification marked on the fitting — overtightening an O-ring fitting cuts the O-ring. Evacuate to 29.9&quot; Hg for 45 minutes minimum with a two-stage pump. Hold vacuum 15 minutes after pump shutoff — any loss indicates a leak that must be found before charging. Charge with R-134a to manufacturer specification.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>A/C manifold gauge set</li><li>Vacuum pump</li><li>Recovery machine</li><li>EZ-Clip tool</li></ul></div>
+          <div class="step-section safety-block"><div class="safety-line">⚠ Refrigerant recovery is legally required before opening any A/C system.</div><div class="safety-line">⚠ Install the drier last — the desiccant is destroyed by moisture exposure before vacuum pull.</div></div>
+          <div class="step-section tip-block"><div class="tip-line">✓ Measure and plan every hose run before crimping a single fitting. Unlike barbed fittings, EZ-Clip cannot be reworked.</div><div class="tip-line">✓ If system does not hold vacuum during leak check, use electronic leak detection before charging — do not assume the leak will seal.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Existing refrigerant recovered by certified equipment</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Old compressor, drier, and hoses removed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>New compressor installed, clutch gap verified 0.016–0.031&quot;</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All EZ-Clip hoses measured, built, and routed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Drier installed last</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>System evacuated 29.9&quot; Hg for 45 min minimum</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Vacuum held 15 min after pump shutoff</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Charged with R-134a to spec</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Compressor engagement and cooling verified</span></label></div></div>
+        </div>
+      </div>
+      <div class="step-wrap" id="GUIDE-CC82-P4-s2">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 2</span>
+          <span class="step-name">Aluminum Tank &amp; Heater Hose Installation</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">Install the aluminum coolant overflow tank kit and aluminum washer fluid tank from BJ's Off-Road. These are direct-fit aluminum upgrades — significantly more appropriate for a $40k collector vehicle than plastic replacements. Mount overflow tank to driver-side inner fender. Connect overflow hose to radiator filler neck outlet. Fill cooling system and cycle to operating temp to confirm overflow draws back correctly. Install washer fluid tank to passenger inner fender, connect pump wiring, test washer function. Replace heater hoses (5/8&quot; and 3/4&quot;) with new universal hose cut to length, secure with stainless clamps.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>Drill</li><li>Screwdrivers</li><li>Hose clamp pliers</li></ul></div>
+          
+          <div class="step-section tip-block"><div class="tip-line">✓ After installing the overflow tank, the first heat cycle is the test — coolant should pull back from the overflow tube into the radiator as the engine cools. If it doesn't, the overflow tube is not submerged in the radiator or the cap is faulty.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Aluminum overflow tank mounted and hose connected</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Cooling system filled and overflow function confirmed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Aluminum washer tank mounted</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Washer pump wiring connected and tested</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All heater hoses replaced with new stainless-clamped hose</span></label></div></div>
+        </div>
+      </div>
+      <div class="step-wrap" id="GUIDE-CC82-P4-s3">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 3</span>
+          <span class="step-name">Valve Covers, PCV, Breather &amp; Hood Insulation</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">Replace cork valve cover gaskets on both valve covers. Clean the valve cover sealing surfaces thoroughly before installation — old cork remnants prevent proper sealing. Cork gaskets do not require RTV unless the surface is pitted. Install new PCV valve and breather cap. Install hood insulation kit per BJ's Off-Road instructions — the SJ Cherokee hood insulation attaches to the underside of the hood with adhesive and retaining clips. A clean hood underside is a significant detail on a concours-quality restoration. Perform oil and filter change — use 10W-30 or 10W-40 conventional or synthetic for break-in after rebuild work.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>Torque wrench (in-lb)</li><li>Gasket scraper</li></ul></div>
+          
+          <div class="step-section tip-block"><div class="tip-line">✓ Torque valve cover bolts to 50-60 in-lbs only — cast aluminum valve covers crack at higher torque. Snug plus 1/4 turn is a reliable guide.</div><div class="tip-line">✓ The hood insulation backing must be completely clean and dry for the adhesive to hold. A de-greased, scuffed surface holds significantly better than bare paint.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Both valve cover surfaces cleaned</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>New cork gaskets installed (no RTV unless surface pitted)</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Valve covers torqued 50-60 in-lbs</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>PCV valve replaced</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Breather cap replaced</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Hood insulation kit installed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Oil and filter changed</span></label></div></div>
+        </div>
+      </div></div>
+      </div>
+
+      <!-- TOOLS -->
+      <div class="card-section">
+        <div class="card-sec-title teal-bar">TOOLS REQUIRED</div>
+        <ul class="tools-master"><li>A/C manifold gauge set</li><li>Vacuum pump (two-stage)</li><li>Refrigerant recovery machine (legally required)</li><li>Vintage Air EZ-Clip crimping tool</li><li>Torque wrench (ft-lb and in-lb)</li><li>Drill and step bits</li><li>Multimeter</li><li>Pipe wrenches</li></ul>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="phase-card" id="GUIDE-CC82-P7">
+    <div class="phase-card-header" onclick="togglePhase(this)">
+      <div class="phase-index">#7</div>
+      <div class="phase-card-info">
+        <div class="phase-card-title">Paint &amp; Body — Custom Dark Brown Metallic</div>
+        <div class="phase-card-meta">
+          <span class="diff-dot" style="background:#c0392b"></span>Advanced
+          &nbsp;·&nbsp; ⏱ 56h
+          &nbsp;·&nbsp; 💰 $2,021
+        </div>
+      </div>
+      <div class="phase-arrow">›</div>
+    </div>
+
+    <div class="phase-body" hidden>
+
+      <p class="phase-desc-text">Full exterior respray of the 1982 Cherokee Chief in custom-mixed 1982 Jeep Dark Brown Metallic (OEM code). Using VEVOR inflatable paint booth, DeVilbiss StartingLine spray equipment, and TCP Global urethane basecoat/clearcoat system. Process: DTM epoxy primer → 2K high-build primer (block sanded) → custom UB basecoat → premium clearcoat → cut and buff. This is the phase that creates the visual impact for the $40k target valuation.</p>
+
+      <!-- TRACKARA ENTRY -->
+      <div class="card-section">
+        <div class="card-sec-title teal-bar">TRACKARA ENTRY</div>
+        <div class="copy-field">
+          <div class="copy-label">GUIDE TITLE</div>
+          <div class="copy-value" onclick="copyMe(this)">Paint &amp; Body — Custom Dark Brown Metallic</div>
+        </div>
+        <div class="copy-field">
+          <div class="copy-label">DESCRIPTION <span class="char-note">(434/500)</span></div>
+          <div class="copy-value scrollable" onclick="copyMe(this)">Full exterior respray of the 1982 Cherokee Chief in custom-mixed 1982 Jeep Dark Brown Metallic (OEM code). Using VEVOR inflatable paint booth, DeVilbiss StartingLine spray equipment, and TCP Global urethane basecoat/clearcoat system. Process: DTM epoxy primer → 2K high-build primer (block sanded) → custom UB basecoat → premium clearcoat → cut and buff. This is the phase that creates the visual impact for the $40k target valuation.</div>
+        </div>
+        <div class="copy-field">
+          <div class="copy-label">TAGS</div>
+          <div class="copy-value" onclick="copyMe(this)">paint, dark-brown-metallic, bodywork, primer, clearcoat, spray-booth, jeep, cherokee-chief, 1982, tcp-global</div>
+        </div>
+        <div class="copy-field">
+          <div class="copy-label">CATEGORY / DIFFICULTY</div>
+          <div class="copy-value">Paint / Body / Advanced</div>
+        </div>
+      </div>
+
+      <!-- PARTS -->
+      <div class="card-section">
+        <div class="card-sec-title dark-bar">PARTS — $2,020.85 est.</div>
+        <div class="parts-list">
+        <div class="part-row">
+          <div class="part-name">VEVOR Inflatable Paint Booth 21x13.5x9.8 ft</div>
+          <div class="part-meta">
+            <span class="part-source">Amazon/VEVOR</span>
+            <span class="part-price">$406.90</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name">DeVilbiss 802343 Auto Painting/Priming Kit</div>
+          <div class="part-meta">
+            <span class="part-source">Amazon</span>
+            <span class="part-price">$210.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name">Gray Epoxy Primer &amp; Sealer 2.1 VOC (2-Gallon Kit)</div>
+          <div class="part-meta">
+            <span class="part-source">Various</span>
+            <span class="part-price">$259.99</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name">2K High Build Primer 4:1 Gray 1 Gallon Kit (x2)</div>
+          <div class="part-meta">
+            <span class="part-source">Various</span>
+            <span class="part-price">$183.98</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://tcpglobal.com/collections/urethane-basecoat-paint-dark-brown/products/rsp-ub1304-kit-fp" target="_blank">Custom Dark Brown Metallic UB Basecoat Medium Gallon Kit</a></div>
+          <div class="part-meta">
+            <span class="part-source">TCP Global (special order)</span>
+            <span class="part-price">$450.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://tcpglobal.com/collections/clear-coats-rsp/products/rsp-kit-hs3010-gl" target="_blank">Premium High Solids Ultra Clearcoat 2.1 VOC Gallon Kit (x2)</a></div>
+          <div class="part-meta">
+            <span class="part-source">TCP Global</span>
+            <span class="part-price">$359.98</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name">Body prep supplies — tape, paper, tack rags, sandpaper</div>
+          <div class="part-meta">
+            <span class="part-source">Local / Amazon</span>
+            <span class="part-price">$150.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div></div>
+      </div>
+
+      <!-- STEPS -->
+      <div class="card-section">
+        <div class="card-sec-title dark-bar">PROCEDURE — 5 STEPS</div>
+        <div class="steps-list">
+      <div class="step-wrap" id="GUIDE-CC82-P7-s1">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 1</span>
+          <span class="step-name">Exterior Strip, Panel Prep &amp; Booth Setup</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">Remove all exterior trim, badges, mirrors, door handles, and glass (or mask carefully). Remove hood, doors, and tailgate for separate painting — this is mandatory for full jamb coverage on a $40k restoration. Sand all panels with 80-grit DA to scuff existing finish and identify imperfections. Apply black aerosol guide coat to each panel — sand until guide coat is completely gone and surface reads uniformly dull. Set up VEVOR inflatable paint booth on clean, flat concrete with minimum 3' clearance all sides. Confirm booth creates slight negative pressure (door pulls closed gently). Wet-mop floor immediately before each paint session. Booth interior must be above 60°F — use electric heat only with solvent-based products.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>DA sander</li><li>80-grit sandpaper</li><li>Guide coat</li><li>VEVOR booth</li></ul></div>
+          <div class="step-section safety-block"><div class="safety-line">⚠ Original 1982 finish may contain lead-based paint — wear a proper dust respirator during all sanding.</div><div class="safety-line">⚠ Never use combustion heaters inside the booth with solvent-based products.</div></div>
+          <div class="step-section tip-block"><div class="tip-line">✓ Remove doors for painting — the SJ Cherokee door jambs are very visible and impossible to paint well with doors on.</div><div class="tip-line">✓ Guide coat is not optional — it is the only objective way to verify a panel is flat before primer.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All trim, badges, handles removed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Hood, doors, tailgate removed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All panels 80-grit DA sanded</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Guide coat applied and sanded completely off each panel</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Booth inflated, negative pressure confirmed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Floor wet-mopped before first session</span></label></div></div>
+        </div>
+      </div>
+      <div class="step-wrap" id="GUIDE-CC82-P7-s2">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 2</span>
+          <span class="step-name">Epoxy Primer Application</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">Apply epoxy primer and sealer (2-gallon kit) to all bare metal and sanded areas. Mix at manufacturer ratio (typically 1:1 with activator). Apply two medium wet coats with 30-minute flash between coats. Work roof down. Epoxy primer has a recoat window — check product data sheet and apply next product within the specified window or scuff-sand before continuing. Allow minimum 24-hour cure before block sanding.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>DeVilbiss spray gun (1.8mm tip for primer)</li><li>Mixing cups</li><li>Full-face respirator with isocyanate cartridges</li></ul></div>
+          <div class="step-section safety-block"><div class="safety-line">⚠ Epoxy primer activator contains isocyanate. Full-face air-supplied respirator is strongly recommended — cartridge respirator is minimum.</div><div class="safety-line">⚠ Pot life approximately 4-8 hours depending on temperature — mix only what you will use.</div></div>
+          <div class="step-section tip-block"><div class="tip-line">✓ Epoxy primer is self-leveling — spray slightly wet rather than dry. A dry coat that needs sanding loses the corrosion-protection benefit.</div><div class="tip-line">✓ After full cure, block-sand lightly with 180-grit before high-build to improve intercoat adhesion.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All surfaces wiped with wax and grease remover before spraying</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Epoxy mixed at correct ratio</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Two coats applied roof-down</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>30-minute flash between coats</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>24-hour minimum cure before next product</span></label></div></div>
+        </div>
+      </div>
+      <div class="step-wrap" id="GUIDE-CC82-P7-s3">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 3</span>
+          <span class="step-name">2K High-Build Primer &amp; Block Sanding</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">Apply 2K high-build primer (two 1-gallon kits) over cured epoxy. Apply 3-4 wet coats with correct flash between coats. Allow full cure (8-24 hours at 70°F — longer in cold). Block-sand with 320-grit on a longboard using guide coat on every panel. Address remaining low spots with additional high-build or glazing putty. Final sand 400-grit before basecoat. Every panel must be uniformly dull with zero shiny spots before color goes on — shiny spots are low areas that paint will telegraph.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>DeVilbiss spray gun</li><li>Long-board</li><li>Short-board</li><li>320-grit / 400-grit</li><li>Guide coat</li><li>Respirator</li></ul></div>
+          <div class="step-section safety-block"><div class="safety-line">⚠ 2K primer contains isocyanate activator — same respirator precautions as epoxy primer.</div></div>
+          <div class="step-section tip-block"><div class="tip-line">✓ Block sanding is the most time-consuming and most important step — paint amplifies every surface imperfection. Allocate more time than you think is needed.</div><div class="tip-line">✓ On curved SJ Cherokee panels (fenders, hood), use a flexible block. A rigid block creates flat spots on curved panels.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>3-4 coats high-build primer applied with correct flash</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Full cure before block sanding</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Guide coat on all panels during block sanding</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All panels 320-grit longboard block sanded</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Low spots identified and addressed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All panels final-sanded 400-grit — uniformly dull with zero shiny spots</span></label></div></div>
+        </div>
+      </div>
+      <div class="step-wrap" id="GUIDE-CC82-P7-s4">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 4</span>
+          <span class="step-name">Custom Dark Brown Metallic Basecoat</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">Apply custom-mixed 1982 Jeep Dark Brown Metallic UB basecoat (TCP Global special order). Wipe all surfaces with wax and grease remover immediately before spraying. Tack-cloth every panel just before gun passes over it. Switch to 1.3-1.4mm tip for basecoat. Apply 2-3 medium wet coats with 15-minute flash between coats. Basecoat must appear uniform in gloss and color — mottled or streaky appearance means insufficient coverage that must be corrected before clear. Apply entire vehicle in one session — do not split across days. Metallic basecoat requires consistent gun speed and 50% overlap per pass to prevent tiger-stripe effect on large flat areas (SJ roof and hood are most vulnerable).</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>DeVilbiss spray gun (1.3-1.4mm tip)</li><li>Tack cloths</li><li>Wax and grease remover</li></ul></div>
+          <div class="step-section safety-block"><div class="safety-line">⚠ Basecoat solvents are highly flammable — maintain booth ventilation throughout.</div></div>
+          <div class="step-section tip-block"><div class="tip-line">✓ Walk around the entire vehicle in cross-light after each coat to catch misses and dry spots before flash time ends.</div><div class="tip-line">✓ The SJ Cherokee's large flat roof is the hardest panel to spray uniformly with metallic — make consistent, deliberate passes.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All panels wiped with wax and grease remover</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All panels tack-clothed immediately before spraying</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Basecoat mixed per TCP Global ratio</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>1.3-1.4mm tip installed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>2-3 coats applied with 15-minute flash</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Color and gloss uniform across all panels</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>No mottling, tiger striping, or dry spots</span></label></div></div>
+        </div>
+      </div>
+      <div class="step-wrap" id="GUIDE-CC82-P7-s5">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 5</span>
+          <span class="step-name">Clearcoat, Cure &amp; Color Sand</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">Apply premium high-solids clearcoat (two gallons total). Mix at manufacturer ratio. Apply 3 wet coats with 10-15 minute flash between coats — final coat is a full wet coat. Watch for sags at feature lines and lower panels on the SJ Cherokee. Allow minimum 48-72 hours cure at 70°F before color sanding. Color sand: 800-grit wet → 1500-grit wet → machine polish with cutting compound → finishing polish with dual-action polisher. Do not color sand until clear is fully cured — sanding uncured clear causes solvent pop and permanent hazing.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>DeVilbiss spray gun</li><li>800-grit / 1500-grit wet/dry</li><li>Dual-action polisher</li><li>Cutting compound</li><li>Finishing polish</li></ul></div>
+          <div class="step-section safety-block"><div class="safety-line">⚠ High-solids clearcoat activator contains isocyanate — full-face air-supplied respirator strongly recommended.</div></div>
+          <div class="step-section tip-block"><div class="tip-line">✓ Keep a halogen light at a low angle while spraying clear — this lets you see the wet film and catch sags in real time.</div><div class="tip-line">✓ Each successive grit must completely eliminate scratches from the previous grit — a single 800-grit scratch surviving to the polishing stage will be visible in the final surface.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>3 wet coats applied with correct flash</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>No sags or runs in finished clear</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>48-72 hour cure before color sanding</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Color sanded 800-grit wet</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Color sanded 1500-grit wet</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Machine polished with cutting compound</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Finished with final polish</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All panels uniform in depth and gloss</span></label></div></div>
+        </div>
+      </div></div>
+      </div>
+
+      <!-- TOOLS -->
+      <div class="card-section">
+        <div class="card-sec-title teal-bar">TOOLS REQUIRED</div>
+        <ul class="tools-master"><li>VEVOR inflatable paint booth</li><li>DeVilbiss StartingLine spray gun set</li><li>Air compressor (minimum 5 HP, 20 CFM at 90 PSI)</li><li>Air dryer and oil/water separator</li><li>DA random orbital sander</li><li>Long-board and short-board hand sanding blocks</li><li>Sandpaper: 80 / 180 / 320 / 400 / 600 / 800 / 1500-grit</li><li>Dual-action polisher</li><li>Cutting compound and finishing polish</li><li>Tack cloths</li><li>Fine-line and standard masking tape</li><li>Respirator — NIOSH-approved for isocyanate (spray suit mandatory for 2K products)</li></ul>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="phase-card" id="GUIDE-CC82-P9">
+    <div class="phase-card-header" onclick="togglePhase(this)">
+      <div class="phase-index">#8</div>
+      <div class="phase-card-info">
+        <div class="phase-card-title">Wheels &amp; Tires — Restored White Wagon Wheels</div>
+        <div class="phase-card-meta">
+          <span class="diff-dot" style="background:#27ae60"></span>Beginner
+          &nbsp;·&nbsp; ⏱ 8h
+          &nbsp;·&nbsp; 💰 $1,548
+        </div>
+      </div>
+      <div class="phase-arrow">›</div>
+    </div>
+
+    <div class="phase-body" hidden>
+
+      <p class="phase-desc-text">Restoration and installation of factory 15&quot; white wagon wheels with chrome center caps and 33x12.50R15 Goodyear Wrangler DuraTrac tires. The white wheels with chrome caps on Dark Brown Metallic is the definitive 1982 Cherokee Chief aesthetic — this combination is a significant contributor to the $40k collector valuation.</p>
+
+      <!-- TRACKARA ENTRY -->
+      <div class="card-section">
+        <div class="card-sec-title teal-bar">TRACKARA ENTRY</div>
+        <div class="copy-field">
+          <div class="copy-label">GUIDE TITLE</div>
+          <div class="copy-value" onclick="copyMe(this)">Wheels &amp; Tires — Restored White Wagon Wheels</div>
+        </div>
+        <div class="copy-field">
+          <div class="copy-label">DESCRIPTION <span class="char-note">(322/500)</span></div>
+          <div class="copy-value scrollable" onclick="copyMe(this)">Restoration and installation of factory 15&quot; white wagon wheels with chrome center caps and 33x12.50R15 Goodyear Wrangler DuraTrac tires. The white wheels with chrome caps on Dark Brown Metallic is the definitive 1982 Cherokee Chief aesthetic — this combination is a significant contributor to the $40k collector valuation.</div>
+        </div>
+        <div class="copy-field">
+          <div class="copy-label">TAGS</div>
+          <div class="copy-value" onclick="copyMe(this)">wheels, tires, white-wagon-wheels, chrome-caps, duratrac, 33-inch, jeep, cherokee-chief, 1982</div>
+        </div>
+        <div class="copy-field">
+          <div class="copy-label">CATEGORY / DIFFICULTY</div>
+          <div class="copy-value">Wheels / Tires / Beginner</div>
+        </div>
+      </div>
+
+      <!-- PARTS -->
+      <div class="card-section">
+        <div class="card-sec-title dark-bar">PARTS — $1,548.00 est.</div>
+        <div class="parts-list">
+        <div class="part-row">
+          <div class="part-name">Paint and primer for wheel restoration</div>
+          <div class="part-meta">
+            <span class="part-source">Local</span>
+            <span class="part-price">$150.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name">Sandblasting for wheels</div>
+          <div class="part-meta">
+            <span class="part-source">Local</span>
+            <span class="part-price">$100.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name">Goodyear Wrangler DuraTrac 33x12.50R15 LT 108Q C2 OWL (x4)</div>
+          <div class="part-meta">
+            <span class="part-source">Local tire shop</span>
+            <span class="part-price">$1,148.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name">Mount and balance (5 wheels)</div>
+          <div class="part-meta">
+            <span class="part-source">Local tire shop</span>
+            <span class="part-price">$150.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div></div>
+      </div>
+
+      <!-- STEPS -->
+      <div class="card-section">
+        <div class="card-sec-title dark-bar">PROCEDURE — 2 STEPS</div>
+        <div class="steps-list">
+      <div class="step-wrap" id="GUIDE-CC82-P9-s1">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 1</span>
+          <span class="step-name">Wheel Restoration — Sandblast, Prime &amp; Paint White</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">Sandblast all five factory 15&quot; wagon wheels to bare steel. Inspect each wheel for cracks, bends, and elongated lug holes — a wheel with elongated lug holes must be replaced. Inspect bead seating surfaces for pitting or damage. Apply epoxy primer to all five wheels within 1 hour of blasting — bare steel begins to surface-rust within hours. Apply two coats of white wheel paint per factory spec. Source or polish chrome center caps. The 5x5.5&quot; (5x139.7mm) bolt pattern is confirmed for the SJ Cherokee narrow-track application.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>Sandblaster</li><li>Spray equipment</li><li>Epoxy primer</li></ul></div>
+          
+          <div class="step-section tip-block"><div class="tip-line">✓ Confirm the bolt pattern on all five wheels before restoration — if wheels were sourced from different vehicles, a mix of 5x5.5&quot; and 5x4.5&quot; wheels is possible and a wheel with the wrong pattern will not seat correctly.</div><div class="tip-line">✓ Apply epoxy primer within 1 hour of sandblasting — bare steel flash-rusts very quickly.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All five wheels sandblasted to bare steel</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All lug holes inspected for elongation</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Bead seats inspected for damage</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Epoxy primer applied within 1 hour of blasting</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Two coats white wheel paint applied</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Chrome center caps sourced or polished</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Bolt pattern confirmed: 5x5.5&quot; on all five wheels</span></label></div></div>
+        </div>
+      </div>
+      <div class="step-wrap" id="GUIDE-CC82-P9-s2">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 2</span>
+          <span class="step-name">Tire Mounting, Balancing &amp; Installation</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">Mount Goodyear Wrangler DuraTrac 33x12.50R15 tires on restored wheels at a tire shop with equipment rated for LT tires. Request road-force balancing for best result on a heavy SJ Cherokee body. Inspect bead seating indicator line on each tire after mounting — must be concentric at uniform distance from rim all the way around. Install four wheels. Clean hub faces with wire brush before installation. Torque lug nuts to 80-90 ft-lbs in a star pattern — torque wrench only, not impact gun for final torque. Mount spare. Recheck torque at 50 miles.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>Torque wrench (ft-lb)</li><li>Wire brush</li><li>Tire pressure gauge</li></ul></div>
+          <div class="step-section safety-block"><div class="safety-line">⚠ Never use anti-seize on lug nut threads or hub faces — changes torque-to-clamping relationship and results in under-clamping.</div><div class="safety-line">⚠ LT tire bead seating requires higher pressure than passenger tires — allow qualified tire shop personnel to perform.</div></div>
+          <div class="step-section tip-block"><div class="tip-line">✓ The Goodyear DuraTrac in OWL (Outlined White Letter) is correct for the period-accurate 1980s aesthetic while providing modern all-terrain performance.</div><div class="tip-line">✓ Set tire pressure to 35 PSI for street driving with 33x12.50R15 C-load-range tires on the SJ Cherokee — adjust per tire manufacturer's load/pressure chart for your conditions.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All four tires mounted with new valve stems</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Road-force balancing performed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Bead seating indicator line concentric on all tires</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Hub faces cleaned with wire brush before installation</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All four wheels installed, lug nuts torqued 80-90 ft-lbs star pattern</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Spare mounted and balanced</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Torque recheck scheduled at 50 miles</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Tire pressure set to 35 PSI</span></label></div></div>
+        </div>
+      </div></div>
+      </div>
+
+      <!-- TOOLS -->
+      <div class="card-section">
+        <div class="card-sec-title teal-bar">TOOLS REQUIRED</div>
+        <ul class="tools-master"><li>Torque wrench (ft-lb)</li><li>Floor jack and jack stands</li><li>Wire brush</li><li>Lug nut socket 3/4&quot;</li><li>Tire pressure gauge</li></ul>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="phase-card" id="GUIDE-CC82-P8">
+    <div class="phase-card-header" onclick="togglePhase(this)">
+      <div class="phase-index">#9</div>
+      <div class="phase-card-info">
+        <div class="phase-card-title">Interior — Leather, Tech &amp; Comfort</div>
+        <div class="phase-card-meta">
+          <span class="diff-dot" style="background:#d4860a"></span>Intermediate
+          &nbsp;·&nbsp; ⏱ 40h
+          &nbsp;·&nbsp; 💰 $6,055
+        </div>
+      </div>
+      <div class="phase-arrow">›</div>
+    </div>
+
+    <div class="phase-body" hidden>
+
+      <p class="phase-desc-text">Full interior restoration to $40k collector standard. Katzkin leather upholstery (tan/earth tone to complement Dark Brown Metallic exterior), Dakota Digital RTX dash cluster, RetroSound Bluetooth head unit, complete weatherstrip kit, new carpet, headliner, 3-point seatbelts, cargo panels, and all trim hardware. The interior is the primary value-driver for the $40k target — every surface must be correct.</p>
+
+      <!-- TRACKARA ENTRY -->
+      <div class="card-section">
+        <div class="card-sec-title teal-bar">TRACKARA ENTRY</div>
+        <div class="copy-field">
+          <div class="copy-label">GUIDE TITLE</div>
+          <div class="copy-value" onclick="copyMe(this)">Interior — Leather, Tech &amp; Comfort</div>
+        </div>
+        <div class="copy-field">
+          <div class="copy-label">DESCRIPTION <span class="char-note">(406/500)</span></div>
+          <div class="copy-value scrollable" onclick="copyMe(this)">Full interior restoration to $40k collector standard. Katzkin leather upholstery (tan/earth tone to complement Dark Brown Metallic exterior), Dakota Digital RTX dash cluster, RetroSound Bluetooth head unit, complete weatherstrip kit, new carpet, headliner, 3-point seatbelts, cargo panels, and all trim hardware. The interior is the primary value-driver for the $40k target — every surface must be correct.</div>
+        </div>
+        <div class="copy-field">
+          <div class="copy-label">TAGS</div>
+          <div class="copy-value" onclick="copyMe(this)">interior, katzkin, leather, dakota-digital, retrosound, weatherstrip, carpet, seatbelts, jeep, cherokee-chief, 1982</div>
+        </div>
+        <div class="copy-field">
+          <div class="copy-label">CATEGORY / DIFFICULTY</div>
+          <div class="copy-value">Interior / Intermediate</div>
+        </div>
+      </div>
+
+      <!-- PARTS -->
+      <div class="card-section">
+        <div class="card-sec-title dark-bar">PARTS — $5,425.78 est.</div>
+        <div class="parts-list">
+        <div class="part-row">
+          <div class="part-name"><a href="https://bjsoffroad.com/headliner-kit-with-backer-board-1979-1991-wagons/" target="_blank">Headliner Kit with Backer Board 1979-1991</a></div>
+          <div class="part-meta">
+            <span class="part-source">BJ's Off-Road</span>
+            <span class="part-price">$655.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://bjsoffroad.com/carpet-kit-complete-1963-1991-wagons/" target="_blank">Complete Carpet Kit 1963-1991 Wagons</a></div>
+          <div class="part-meta">
+            <span class="part-source">BJ's Off-Road</span>
+            <span class="part-price">$550.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name">3-Piece Front Seat Belt Set 1968-1991</div>
+          <div class="part-meta">
+            <span class="part-source">Team Grand Wagoneer</span>
+            <span class="part-price">$284.95</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name">3-Piece Rear Seat Belt Set 1968-1991</div>
+          <div class="part-meta">
+            <span class="part-source">Team Grand Wagoneer</span>
+            <span class="part-price">$284.95</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://teamgrandwagoneer.com/seat-belt-front-rear-10-piece-bolt-set-gw-1980-1991/" target="_blank">Seat Belt Bolt Set 10-Piece 1980-1991</a></div>
+          <div class="part-meta">
+            <span class="part-source">Team Grand Wagoneer</span>
+            <span class="part-price">$46.95</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://bjsoffroad.com/katzkin-seat-upholstery-kit-1983-1991-fully-customizable/" target="_blank">Katzkin Leather Seat Upholstery Kit 1983-1991</a></div>
+          <div class="part-meta">
+            <span class="part-source">BJ's Off-Road</span>
+            <span class="part-price">$1,295.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://bjsoffroad.com/manual-seat-brackets-pair/" target="_blank">Manual Seat Brackets Pair (Driver &amp; Passenger)</a></div>
+          <div class="part-meta">
+            <span class="part-source">BJ's Off-Road</span>
+            <span class="part-price">$400.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://bjsoffroad.com/upholstered-cargo-area-panels/" target="_blank">Upholstered Rear Cargo Panels</a></div>
+          <div class="part-meta">
+            <span class="part-source">BJ's Off-Road</span>
+            <span class="part-price">$357.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://teamgrandwagoneer.com/master-weatherstrip-kit-4-door-full-size-jeep-1963-1991/" target="_blank">Master Weatherstrip Kit 4-Door 1963-1991</a></div>
+          <div class="part-meta">
+            <span class="part-source">Team Grand Wagoneer</span>
+            <span class="part-price">$840.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://www.steelerubber.com/sash-channel-filler-70-2170-257" target="_blank">Sash Channel Filler 1/16&quot; x 13ft</a></div>
+          <div class="part-meta">
+            <span class="part-source">Steele Rubber</span>
+            <span class="part-price">$30.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://teamgrandwagoneer.com/door-lock-knob-set-of-4-gw-1974-1991/" target="_blank">Door Lock Knob Set of 4 1974-1991</a></div>
+          <div class="part-meta">
+            <span class="part-source">Team Grand Wagoneer</span>
+            <span class="part-price">$19.95</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name">Window Crank Set</div>
+          <div class="part-meta">
+            <span class="part-source">Team Grand Wagoneer</span>
+            <span class="part-price">$19.95</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://jeeprecyclers.com/1978-1983-retrosound-radio-with-chrome-face-bezel-black-buttons-chrome-accent-knobs/" target="_blank">RetroSound Radio Chrome/Black/Chrome 1978-1983</a></div>
+          <div class="part-meta">
+            <span class="part-source">JeepRecyclers</span>
+            <span class="part-price">$422.99</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://jeeprecyclers.com/digital-clock-1973-1985/" target="_blank">Digital Clock 1973-1985</a></div>
+          <div class="part-meta">
+            <span class="part-source">JeepRecyclers</span>
+            <span class="part-price">$159.04</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name"><a href="https://jeeprecyclers.com/lexan-lenses-for-1974-1985-full-size-jeep-gauge-clusters/" target="_blank">Lexan Lenses for 1974-1985 Gauge Clusters</a></div>
+          <div class="part-meta">
+            <span class="part-source">JeepRecyclers</span>
+            <span class="part-price">$60.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div>
+        <div class="part-row">
+          <div class="part-name">Dakota Digital RTX-73J-WAG Dash Cluster (if included)</div>
+          <div class="part-meta">
+            <span class="part-source">JeepRecyclers</span>
+            <span class="part-price">$0.00</span>
+          </div>
+          <div class="part-checks">
+            <label class="chk-label"><input type="checkbox"> Ordered</label>
+            <label class="chk-label"><input type="checkbox"> Received</label>
+            <label class="chk-label"><input type="checkbox"> Installed</label>
+          </div>
+        </div></div>
+      </div>
+
+      <!-- STEPS -->
+      <div class="card-section">
+        <div class="card-sec-title dark-bar">PROCEDURE — 5 STEPS</div>
+        <div class="steps-list">
+      <div class="step-wrap" id="GUIDE-CC82-P8-s1">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 1</span>
+          <span class="step-name">Full Interior Strip</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">Strip the interior completely to bare metal before any new material goes in. Remove all seats, tracks, seat belt hardware. Remove all door panels (save clips in labeled bags). Remove headliner and backer board. Remove carpet and jute padding. Remove dash pad and all dashboard components — photograph every electrical connector before unplugging. Remove window cranks and door lock knobs. Inspect floor for rust before Phase 5 begins — do not install any interior material over unaddressed rust.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>Trim removal tools</li><li>Drill</li><li>Ratchet</li></ul></div>
+          <div class="step-section safety-block"><div class="safety-line">⚠ Disconnect battery negative before removing any dashboard electrical components.</div><div class="safety-line">⚠ Assume original foam and adhesive contains pre-modern-safety materials — wear gloves and work in ventilated area.</div></div>
+          <div class="step-section tip-block"><div class="tip-line">✓ Photograph every dash connector before unplugging — the SJ Cherokee wiring is simple but connector positions are not intuitive.</div><div class="tip-line">✓ Keep the original carpet as a template even if the new kit is pre-cut.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All seats and tracks removed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All seat belt hardware removed and inspected</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All door panels removed, clips saved and labeled</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Headliner and backer removed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Carpet and jute removed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All dash components photographed and removed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Window cranks and lock knobs removed</span></label></div></div>
+        </div>
+      </div>
+      <div class="step-wrap" id="GUIDE-CC82-P8-s2">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 2</span>
+          <span class="step-name">Floor Prep, Sound Deadener &amp; Carpet</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">After Phase 5 metal work is complete and epoxy primer is cured, apply seam sealer to all weld seams. Apply sound deadener mat (Dynamat or equivalent) to floor, transmission tunnel, and toe boards — overlap seams minimum 2&quot;. This is not optional on an SJ Cherokee used for regular driving. Install complete carpet kit starting at rear cargo area, working forward. Use spray adhesive at tunnel and toe board areas where carpet must conform to compound curves. Use a heat gun for tight bends — score carpet backing lightly (not through) at sharp radius bends to help conform without bunching.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>Seam sealer</li><li>Sound deadener</li><li>Spray adhesive</li><li>Heat gun</li><li>Utility knife</li></ul></div>
+          
+          <div class="step-section tip-block"><div class="tip-line">✓ Test-fit carpet without adhesive first — confirm all cutouts align with floor holes before any adhesive is applied.</div><div class="tip-line">✓ Do not cover drain holes in the floor with deadener.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All weld seams sealed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Sound deadener applied to floor, tunnel, and toe boards — seams overlapped 2&quot;</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Carpet test-fit before adhesive</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Carpet installed rear-to-front</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All cutouts aligned with floor hardware holes</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>No lifting edges or bubbles</span></label></div></div>
+        </div>
+      </div>
+      <div class="step-wrap" id="GUIDE-CC82-P8-s3">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 3</span>
+          <span class="step-name">Seat Belts, Seat Brackets &amp; Katzkin Seats</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">Chase all seat belt anchor threads with correct tap before installing any hardware — 40-year-old anchor threads in steel pillars are frequently corroded. Inspect all pillar anchor points for rust-through. Torque all seat belt anchor bolts to 30-35 ft-lbs minimum using anti-seize on threads. Confirm all retractors and buckles function. Install manual seat brackets to floor — torque to 25 ft-lbs. Install Katzkin leather seats — verify seat travel range and buckle accessibility in all positions. Specify tan/earth tone leather when ordering Katzkin to complement the Dark Brown Metallic exterior.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>Thread tap set</li><li>Torque wrench (ft-lb)</li></ul></div>
+          <div class="step-section safety-block"><div class="safety-line">⚠ Seat belt anchor torque is a safety-critical specification — 30-35 ft-lbs minimum. Under-torqued anchors pull free in a collision.</div><div class="safety-line">⚠ Inspect all anchor points for rust-through before installation — a corroded pillar cannot hold a seat belt anchor regardless of torque.</div></div>
+          <div class="step-section tip-block"><div class="tip-line">✓ Use anti-seize on seat belt anchor bolt threads — these should be removable in the future for inspection.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All anchor threads chased with tap</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All anchor points inspected for rust-through</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Front seat belts (3-piece per side) installed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Rear seat belts (3-piece) installed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All anchor bolts torqued 30-35 ft-lbs</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All retractors and buckles function</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Seat brackets installed and torqued</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Katzkin leather seats installed — tan/earth tone confirmed</span></label></div></div>
+        </div>
+      </div>
+      <div class="step-wrap" id="GUIDE-CC82-P8-s4">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 4</span>
+          <span class="step-name">Headliner, Weatherstrip &amp; Door Panels</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">Install headliner kit with backer board. Spray adhesive to board and fabric, allow to become tacky, press fabric center-out, use seam roller to eliminate bubbles. Install master weatherstrip kit — clean all door flanges with isopropyl alcohol first, apply weatherstrip adhesive every 6&quot; on curved sections, start each door at bottom center. Allow full adhesive cure (12 hours) before closing doors against new weatherstrip. Install sash channel window filler in all door glass channels. Install upholstered rear cargo panels. Install all four door panels with new door lock knobs and window cranks. Verify all windows operate through full travel without binding.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>Spray adhesive</li><li>Seam roller</li><li>Utility knife</li><li>Isopropyl alcohol</li><li>Heat gun</li></ul></div>
+          <div class="step-section safety-block"><div class="safety-line">⚠ Work in ventilated area when using headliner adhesive.</div></div>
+          <div class="step-section tip-block"><div class="tip-line">✓ Warm headliner area with heat gun before applying — cold adhesive fails prematurely.</div><div class="tip-line">✓ Start weatherstrip at bottom center of each door — seam lands at top where it is least visible.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Headliner installed center-out with no bubbles</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All four door weatherstrips installed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Tailgate and rear glass weatherstrips installed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Sash channel filler installed all door channels</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>12-hour adhesive cure before door closure</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Cargo panels installed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All four door panels installed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>New door lock knobs and window cranks installed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All windows operate full travel without binding</span></label></div></div>
+        </div>
+      </div>
+      <div class="step-wrap" id="GUIDE-CC82-P8-s5">
+        <button class="step-toggle" onclick="toggleStep(this)" aria-expanded="false">
+          <span class="step-pill">STEP 5</span>
+          <span class="step-name">Dash, Instruments &amp; Radio</span>
+          <span class="chevron">›</span>
+        </button>
+        <div class="step-content" hidden>
+          <p class="step-desc">Install Dakota Digital RTX-73J-WAG instrument cluster (if included in build). The RTX is a direct-fit replacement — disconnect factory speedometer cable, install Dakota Digital transmission speed sender, connect the 20-pin harness per Dakota Digital wiring guide. Calibrate for tire circumference (33&quot; tires) and axle ratio. Bench-test before final installation. Install RetroSound radio — connect constant 12V (memory), switched 12V (ignition), ground, and antenna. Install digital clock and Lexan gauge cluster lenses. Install new Lexan lenses in factory gauge cluster if RTX is not included — gives a fresh factory appearance at a fraction of the cost.</p>
+          <div class="step-section"><div class="step-sec-label tools-label">TOOLS</div><ul class="step-tools"><li>Multimeter</li><li>Electrical tape</li><li>Butt connectors</li></ul></div>
+          <div class="step-section safety-block"><div class="safety-line">⚠ Disconnect battery negative before all dashboard electrical work.</div></div>
+          <div class="step-section tip-block"><div class="tip-line">✓ Bench-test the RTX cluster with temporary leads before final installation — diagnosing a wiring issue with the cluster fully installed behind the dash is significantly harder.</div><div class="tip-line">✓ The digital clock and Lexan gauge lenses are an excellent value-add for period-correct appearance without the full RTX cost if budget requires prioritization.</div></div>
+          <div class="step-section"><div class="step-sec-label">CHECKLIST</div><div class="checklist"><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>RTX cluster installed and all harness connections made (if included)</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Speedometer calibrated for 33&quot; tires and axle ratio</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>RetroSound radio installed and all functions tested</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Digital clock installed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>Lexan gauge lenses installed</span></label><label class="step-check"><input type="checkbox" onchange="updateProgress()"> <span>All dash electrical functions verified</span></label></div></div>
+        </div>
+      </div></div>
+      </div>
+
+      <!-- TOOLS -->
+      <div class="card-section">
+        <div class="card-sec-title teal-bar">TOOLS REQUIRED</div>
+        <ul class="tools-master"><li>Trim removal tools (plastic)</li><li>Heat gun</li><li>Contact cement and brush</li><li>Spray adhesive (headliner)</li><li>Seam roller</li><li>Utility knife and straightedge</li><li>Drill and step bits</li><li>Multimeter</li><li>Thread tap set (seat belt anchors)</li><li>Torque wrench (ft-lb)</li></ul>
+      </div>
+
+    </div>
+  </section>
+
+<div class="bottom-pad"></div>
+<div class="toast" id="toast">✓ Copied</div>
+
+<script>
+const TOTAL_CHECKS = 226;
+
+function togglePhase(header) {
+  const body = header.nextElementSibling;
+  const isOpen = !body.hidden;
+  body.hidden = isOpen;
+  header.classList.toggle('open', !isOpen);
+}
+
+function toggleStep(btn) {
+  const content = btn.nextElementSibling;
+  const isOpen = !content.hidden;
+  content.hidden = isOpen;
+  btn.setAttribute('aria-expanded', String(!isOpen));
+}
+
+function copyMe(el) {
+  const raw = el.innerText
+    .replace(/TAP TO COPY|✓ COPIED/gi, '')
+    .trim();
+
+  const doToast = () => {
+    el.classList.add('copied');
+    setTimeout(() => el.classList.remove('copied'), 2000);
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+  };
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(raw).then(doToast).catch(() => fallback(raw, doToast));
+  } else {
+    fallback(raw, doToast);
+  }
+}
+
+function fallback(text, cb) {
+  try {
+    const r = document.createRange();
+    const sel = window.getSelection();
+    const span = document.createElement('span');
+    span.textContent = text;
+    span.style.cssText = 'position:fixed;top:0;left:0;opacity:0;white-space:pre';
+    document.body.appendChild(span);
+    r.selectNode(span);
+    sel.removeAllRanges();
+    sel.addRange(r);
+    document.execCommand('copy');
+    sel.removeAllRanges();
+    document.body.removeChild(span);
+    cb();
+  } catch(e) { console.warn('Copy failed', e); }
+}
+
+function updateProgress() {
+  const checked = document.querySelectorAll('.step-check input:checked').length;
+  const pct = TOTAL_CHECKS > 0 ? (checked / TOTAL_CHECKS * 100) : 0;
+  document.getElementById('gp').style.width = pct + '%';
+  document.getElementById('progress-label').textContent =
+    checked + ' / ' + TOTAL_CHECKS + ' checklist items complete';
+}
+</script>
+</body>
+</html>
